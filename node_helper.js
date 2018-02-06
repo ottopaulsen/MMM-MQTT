@@ -1,6 +1,7 @@
 var mqtt = require('mqtt');
-
 var NodeHelper = require("node_helper");
+
+var topics = [];
 
 module.exports = NodeHelper.create({
 
@@ -14,15 +15,18 @@ module.exports = NodeHelper.create({
 
 		if (notification === 'MQTT_CONFIG') {
             self.config = payload;
-            self.value = 'connecting';
-            self.loaded = true;
-            console.log(this.name + ': Connection started');
 
-            // Subscribe here
+            // Read topics to subscribe
+            for(i = 0; i < self.config.subscriptions.length; i++){
+                topics[i] = self.config.subscriptions[i].topic;
+            }
+
+            self.loaded = true;
+
             console.log(self.name + ': Connecting to ' + this.config.mqttServer);
             self.options = {
                 username: self.config.mqttUser,
-                password: self.config.mqttPassword
+                password: self.config.mqttPassword,
             };
 
             self.client = mqtt.connect('mqtt://' + self.config.mqttServer, self.options);
@@ -37,30 +41,20 @@ module.exports = NodeHelper.create({
 
             self.client.on('connect', function (connack) {
                 console.log(self.name + ' connected to ' + self.config.mqttServer);
-                console.log(self.name + ': Subscribing to ' + self.config.topic);
-                self.client.subscribe(self.config.topic);
+                console.log(self.name + ': subscribing to ' + topics);
+                self.client.subscribe(topics);
             });
               
             self.client.on('message', function (topic, payload) {
-                //console.log(self.name + ' received message: ' + payload.toString());
-                var value = payload.toString();
-                if(isNaN(self.config.decimals) == false) {
-                    if (isNaN(value) == false){
-                        value = Number(value).toFixed(self.config.decimals);
-                    }
+                // Find correct topic
+                if(topics.includes(topic)){
+                    var value = payload.toString();
+                    self.sendSocketNotification('MQTT_PAYLOAD', {
+                        topic: topic,
+                        value: value
+                    });
                 }
-                self.value = value;
-                self.broadcastMessage();
-                //client.end()
             });
 		}
-	},
-
-
-	broadcastMessage: function() {
-		this.sendSocketNotification('MQTT_PAYLOAD', this.value);
-	}
-
-
-        
+	},        
 });

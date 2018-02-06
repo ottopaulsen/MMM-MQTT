@@ -2,18 +2,30 @@
 Module.register("MMM-MQTT",{
     // Default module config
     defaults: {
-        topic: 'smoky/1/inside/smoke',
         mqttUser: 'user',
         mqttPassword: 'password',
         mqttServer: 'localhost',
-        decimals: '0'
+        subscriptions: []
     },
 
 	start: function() {
         console.log(this.name + ' started.');
+        this.subscriptions = [];
+
+        console.log(this.name + ': Setting up ' + this.config.subscriptions.length + ' topics');
+
+        for(i = 0; i < this.config.subscriptions.length; i++){
+            console.log(this.name + ': Adding config ' + this.config.subscriptions[i].label + ' = ' + this.config.subscriptions[i].topic);
+            this.subscriptions[i] = {
+                label: this.config.subscriptions[i].label,
+                topic: this.config.subscriptions[i].topic,
+                decimals: this.config.subscriptions[i].decimals,
+                value: ''
+            }
+        }
+    
 		this.openMqttConnection();
         var self = this;
-        self.value = 'waiting...';
         setInterval(function() {
             self.updateDom(1000);
         }, 10000);
@@ -26,7 +38,17 @@ Module.register("MMM-MQTT",{
 	socketNotificationReceived: function(notification, payload) {
 		if(notification === 'MQTT_PAYLOAD'){
 			if(payload != null) {
-				this.value = payload;
+                for(i = 0; i < this.subscriptions.length; i++){
+                    if(this.subscriptions[i].topic == payload.topic){
+                        var value = payload.value;
+                        if(isNaN(this.subscriptions[i].decimals) == false) {
+                            if (isNaN(value) == false){
+                                value = Number(value).toFixed(this.subscriptions[i].decimals);
+                            }
+                        }
+                        this.subscriptions[i].value = value;
+                    }
+                }
 				this.updateDom();
 			} else {
                 console.log(this.name + ': MQTT_PAYLOAD - No payload');
@@ -41,10 +63,36 @@ Module.register("MMM-MQTT",{
     },
 
 	getDom: function() {
-		var wrapper = document.createElement("div");
-		wrapper.innerHTML = this.value;
-		return wrapper;
-	}
+        self = this;
+		var wrapper = document.createElement("table");
+        wrapper.className = "small";
+        var first = true;
+    
+        if (self.subscriptions.length === 0) {
+            wrapper.innerHTML = (self.loaded) ? self.translate("EMPTY") : self.translate("LOADING");
+            wrapper.className = "small dimmed";
+            console.log(self.name + ': No values');
+            return wrapper;
+        }        
 
+        self.subscriptions.forEach(function(sub){
+            var subWrapper = document.createElement("tr");
+    
+            // Label
+            var labelWrapper = document.createElement("td");
+            labelWrapper.innerHTML = sub.label;
+            labelWrapper.className = "align-left";
+            subWrapper.appendChild(labelWrapper);
+    
+            // Value
+            var valueWrapper = document.createElement("td");
+            valueWrapper.innerHTML = sub.value;
+            valueWrapper.className = "align-right bright medium";
+            subWrapper.appendChild(valueWrapper);
 
+            wrapper.appendChild(subWrapper);
+        });
+
+        return wrapper;
+    }
 });

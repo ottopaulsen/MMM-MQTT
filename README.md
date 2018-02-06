@@ -20,25 +20,32 @@ This is te default configuration with description. Put it in the `MagicMirror/co
 
     {
         module: 'MMM-MQTT',
-        position: 'bottom_center',
-        header: 'Title',
+        position: 'bottom_left',
+        header: 'MQTT',
         config: {
-            topic: 'smoky/1/inside/smoke',
             mqttUser: 'user',
             mqttPassword: 'password',
             mqttServer: 'localhost',
-            decimals: 0 // Can be used on numbers
+            subscriptions: [
+                {
+                    topic: 'sensor/1/temperature',
+                    label: 'Temperature',
+                    decimals: 1
+                },
+                {
+                    topic: 'sensor/1/humidity',
+                    label: 'Temperature',
+                    decimals: 0
+                }
+            ]
         }
     }
 
 ## TO DO
 
-Maybe change name to something more specific
-
-Change to table format, and handle multiple topics
-
-Upload to github.
 
 Create a timeout, so values are deleted if they are not refreshed. May be faded out...
+
+Add postfix
 
 Create a treshold so a value is flashing if outside treshold.
