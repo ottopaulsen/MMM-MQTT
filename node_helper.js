@@ -22,12 +22,12 @@ module.exports = NodeHelper.create({
             }
 
             self.loaded = true;
+            self.options = {};
+
+            if(self.config.mqttUser) self.options.username = self.config.mqttUser;
+            if(self.config.mqttPassword) self.options.password = self.config.mqttPassword;
 
             console.log(self.name + ': Connecting to ' + this.config.mqttServer);
-            self.options = {
-                username: self.config.mqttUser,
-                password: self.config.mqttPassword,
-            };
 
             self.client = mqtt.connect('mqtt://' + self.config.mqttServer, self.options);
 

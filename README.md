@@ -23,8 +23,8 @@ This is te default configuration with description. Put it in the `MagicMirror/co
         position: 'bottom_left',
         header: 'MQTT',
         config: {
-            mqttUser: 'user',
-            mqttPassword: 'password',
+            mqttUser: 'user',         // Leave out for no user
+            mqttPassword: 'password', // Leave out for no password
             mqttServer: 'localhost',
             subscriptions: [
                 {

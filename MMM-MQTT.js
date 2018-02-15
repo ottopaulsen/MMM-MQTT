@@ -2,8 +2,6 @@
 Module.register("MMM-MQTT",{
     // Default module config
     defaults: {
-        mqttUser: 'user',
-        mqttPassword: 'password',
         mqttServer: 'localhost',
         subscriptions: []
     },
