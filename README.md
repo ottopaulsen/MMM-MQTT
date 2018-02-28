@@ -56,6 +56,4 @@ If the payload contains JSON data, use the jsonpointer configuration to get the 
 
 Create a timeout, so values are deleted if they are not refreshed. May be faded out...
 
-Add postfix
-
 Create a treshold so a value is flashing if outside treshold.
