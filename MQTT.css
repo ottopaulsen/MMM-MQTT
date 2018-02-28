@@ -5,3 +5,7 @@
 .border_top td{
     border-top: 1pt solid #444444;
 }
+
+td {
+    padding-right: 5px;
+}

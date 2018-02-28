@@ -30,7 +30,8 @@ This is the default configuration with description. Put it in the `MagicMirror/c
                 {
                     topic: 'sensor/1/temperature',
                     label: 'Temperature',
-                    decimals: 1
+                    decimals: 1,
+                    suffix: '°C'
                 },
                 {
                     topic: 'sensor/1/humidity',

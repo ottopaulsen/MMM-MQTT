@@ -21,11 +21,13 @@ Module.register("MMM-MQTT",{
 
         for(i = 0; i < this.config.subscriptions.length; i++){
             console.log(this.name + ': Adding config ' + this.config.subscriptions[i].label + ' = ' + this.config.subscriptions[i].topic);
+            
             this.subscriptions[i] = {
                 label: this.config.subscriptions[i].label,
                 topic: this.config.subscriptions[i].topic,
                 decimals: this.config.subscriptions[i].decimals,
                 jsonpointer: this.config.subscriptions[i].jsonpointer,
+                suffix: typeof(this.config.subscriptions[i].suffix) == 'undefined' ? '' : this.config.subscriptions[i].suffix,
                 value: ''
             }
         }
@@ -100,6 +102,12 @@ Module.register("MMM-MQTT",{
             valueWrapper.innerHTML = sub.value;
             valueWrapper.className = "align-right bright medium";
             subWrapper.appendChild(valueWrapper);
+
+            // Suffix
+            var suffixWrapper = document.createElement("td");
+            suffixWrapper.innerHTML = sub.suffix;
+            suffixWrapper.className = "align-left";
+            subWrapper.appendChild(suffixWrapper);
 
             wrapper.appendChild(subWrapper);
         });
