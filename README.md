@@ -16,7 +16,7 @@ Go to `MagicMirror/modules` and write
 
 ## Configuration
 
-This is te default configuration with description. Put it in the `MagicMirror/config/config.js`:
+This is the default configuration with description. Put it in the `MagicMirror/config/config.js`:
 
     {
         module: 'MMM-MQTT',
@@ -34,12 +34,21 @@ This is te default configuration with description. Put it in the `MagicMirror/co
                 },
                 {
                     topic: 'sensor/1/humidity',
-                    label: 'Temperature',
+                    label: 'Humidity',
                     decimals: 0
+                },
+                {
+                    topic: 'guests',
+                    label: 'First guest',
+                    jsonpointer: '/people/0/name'
                 }
             ]
         }
     }
+
+### JSON Data
+
+If the payload contains JSON data, use the jsonpointer configuration to get the value. See [JSON Ponter specification](https://tools.ietf.org/html/rfc6901) or google an easier description.
 
 ## TO DO
 
