@@ -4,6 +4,8 @@
   "description": "Show payload from subscribed MQTT message",
   "author": "Otto Paulsen",
   "dependencies": {
+    "json-pointer": "^0.6.0",
+    "jsonpointer": "^4.0.1",
     "mqtt": "^2.15.1"
   }
 }

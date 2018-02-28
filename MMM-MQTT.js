@@ -1,5 +1,12 @@
 
 Module.register("MMM-MQTT",{
+
+    getScripts: function() {
+        return [
+            this.file('node_modules/jsonpointer/jsonpointer.js')
+        ];
+    },
+
     // Default module config
     defaults: {
         mqttServer: 'localhost',
@@ -18,6 +25,7 @@ Module.register("MMM-MQTT",{
                 label: this.config.subscriptions[i].label,
                 topic: this.config.subscriptions[i].topic,
                 decimals: this.config.subscriptions[i].decimals,
+                jsonpointer: this.config.subscriptions[i].jsonpointer,
                 value: ''
             }
         }
@@ -39,6 +47,11 @@ Module.register("MMM-MQTT",{
                 for(i = 0; i < this.subscriptions.length; i++){
                     if(this.subscriptions[i].topic == payload.topic){
                         var value = payload.value;
+                        // Extract value if JSON Pointer is configured
+                        if(this.subscriptions[i].jsonpointer) {
+                            value = get(JSON.parse(value), this.subscriptions[i].jsonpointer);
+                        }
+                        // Round if decimals is configured
                         if(isNaN(this.subscriptions[i].decimals) == false) {
                             if (isNaN(value) == false){
                                 value = Number(value).toFixed(this.subscriptions[i].decimals);
