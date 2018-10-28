@@ -16,36 +16,55 @@ Go to `MagicMirror/modules` and write
 
 ## Configuration
 
-This is the default configuration with description. Put it in the `MagicMirror/config/config.js`:
+Here is an example configuration with description. Put it in the `MagicMirror/config/config.js` file:
 
     {
         module: 'MMM-MQTT',
         position: 'bottom_left',
         header: 'MQTT',
         config: {
-            mqttUser: 'user',         // Leave out for no user
-            mqttPassword: 'password', // Leave out for no password
-            mqttServer: 'localhost',
-            subscriptions: [
+            mqttServers: [
                 {
-                    topic: 'sensor/1/temperature',
-                    label: 'Temperature',
-                    decimals: 1,
-                    suffix: '°C'
-                },
-                {
-                    topic: 'sensor/1/humidity',
-                    label: 'Humidity',
-                    decimals: 0
-                },
-                {
-                    topic: 'guests',
-                    label: 'First guest',
-                    jsonpointer: '/people/0/name'
+                    address: 'localhost',  // Server address or IP address
+                    port: '1883',          // Port number if other than default
+                    user: 'user',          // Leave out for no user
+                    password: 'password',  // Leave out for no password
+                    subscriptions: [
+                        {
+                            topic: 'smoky/1/inside/temperature', // Topic to look for
+                            label: 'Temperatur', // Displayed in front of value
+                            suffix: '°C',        // Displayed after the value
+                            decimals: 1,         // Round numbers to this number of decimals
+                            sortOrder: 10,       // Can be used to sort entries in the same table
+                            maxAgeSeconds: 60    // Reduce intensity if value is older
+                        },
+                        {
+                            topic: 'smoky/1/inside/humidity',
+                            label: 'Luftfuktighet',
+                            suffix: '%',
+                            decimals: 0,
+                            sortOrder: 20,
+                            maxAgeSeconds: 60
+                        },
+                        {
+                            topic: 'smoky/1/inside/smoke',
+                            label: 'Røyk',
+                            sortOrder: 30,
+                            maxAgeSeconds: 60
+                        },
+                        {
+                            topic: 'guests',
+                            label: 'First guest',
+                            jsonpointer: '/people/0/name'
+                        }
+                    ]
                 }
-            ]
+            ],
         }
     }
+
+
+mqttServers is an array, so you can add multiple servers to the same config. You can also use the module multiple places on the mirror/screen.
 
 ### JSON Data
 
@@ -53,7 +72,7 @@ If the payload contains JSON data, use the jsonpointer configuration to get the 
 
 ## Collaborate
 
-Do you want to collaborate on this module? Please let me know, and I can invite.
+Pull requests are welcome.
 
 ## TO DO
 
