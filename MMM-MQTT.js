@@ -12,7 +12,7 @@ Module.register("MMM-MQTT", {
         mqttServers: []
     },
 
-    makeServerKey: function(server){
+    makeServerKey: function (server) {
         return '' + server.address + ':' + (server.port | '1883' + server.user);
     },
 
@@ -35,7 +35,9 @@ Module.register("MMM-MQTT", {
                     decimals: sub.decimals,
                     jsonpointer: sub.jsonpointer,
                     suffix: typeof (sub.suffix) == 'undefined' ? '' : sub.suffix,
-                    value: ''
+                    value: '',
+                    time: Date.now(),
+                    maxAgeSeconds: sub.maxAgeSeconds
                 });
             }
         }
@@ -43,8 +45,8 @@ Module.register("MMM-MQTT", {
         this.openMqttConnection();
         var self = this;
         setInterval(function () {
-            self.updateDom(1000);
-        }, 10000);
+            self.updateDom(100);
+        }, 5000);
     },
 
     openMqttConnection: function () {
@@ -69,6 +71,7 @@ Module.register("MMM-MQTT", {
                             }
                         }
                         sub.value = value;
+                        sub.time = payload.time;
                     }
                 }
                 this.updateDom();
@@ -82,6 +85,18 @@ Module.register("MMM-MQTT", {
         return [
             'MQTT.css'
         ];
+    },
+
+    isValueTooOld: function (maxAgeSeconds, updatedTime) {
+        // console.log(this.name + ': maxAgeSeconds = ', maxAgeSeconds);
+        // console.log(this.name + ': updatedTime = ', updatedTime);
+        // console.log(this.name + ': Date.now() = ', Date.now());
+        if (maxAgeSeconds) {
+            if ((updatedTime + maxAgeSeconds * 1000) < Date.now()) {
+                return true;
+            }
+        }
+        return false;
     },
 
     getDom: function () {
@@ -107,9 +122,10 @@ Module.register("MMM-MQTT", {
             subWrapper.appendChild(labelWrapper);
 
             // Value
+            tooOld = self.isValueTooOld(sub.maxAgeSeconds, sub.time);
             var valueWrapper = document.createElement("td");
             valueWrapper.innerHTML = sub.value;
-            valueWrapper.className = "align-right bright medium";
+            valueWrapper.className = "align-right medium " + (tooOld ? "dimmed" : "bright");
             subWrapper.appendChild(valueWrapper);
 
             // Suffix
