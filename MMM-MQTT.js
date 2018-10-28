@@ -4,6 +4,7 @@ Module.register("MMM-MQTT",{
     getScripts: function() {
         return [
             this.file('node_modules/jsonpointer/jsonpointer.js')
+            // 'jsonpointer.js'
         ];
     },
 

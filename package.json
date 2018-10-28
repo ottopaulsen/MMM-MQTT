@@ -5,6 +5,6 @@
   "author": "Otto Paulsen",
   "dependencies": {
     "jsonpointer": "^4.0.1",
-    "mqtt": "^2.15.1"
+    "mqtt": "^2.18.0"
   }
 }
