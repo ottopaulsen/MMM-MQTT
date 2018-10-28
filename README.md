@@ -1,5 +1,13 @@
 # MQTT
 
+## NB! New config!
+
+In order to support multiple instances and multiple servers, the configuration is totally changed! Sorry to not be backwards compatible, but I hope this solves some of the issues I have received.
+
+Please report issues. his is not tested very much.
+
+## Screenshot
+
 ![Screenshot](doc/MQTT.png)
 
 Module for [MagicMirror](https://github.com/MichMich/MagicMirror/) showing the payload of a message from MQTT.
