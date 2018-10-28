@@ -51,6 +51,10 @@ This is the default configuration with description. Put it in the `MagicMirror/c
 
 If the payload contains JSON data, use the jsonpointer configuration to get the value. See [JSON Ponter specification](https://tools.ietf.org/html/rfc6901) or google an easier description.
 
+## Collaborate
+
+Do you want to collaborate on this module? Please let me know, and I can invite.
+
 ## TO DO
 
 
