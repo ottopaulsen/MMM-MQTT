@@ -16,7 +16,7 @@ Module for [MagicMirror](https://github.com/MichMich/MagicMirror/) showing the p
 
 Go to `MagicMirror/modules` and write
 
-    git clone git@github.com:ottopaulsen/MMM-MQTT.git
+    git clone https://github.com/ottopaulsen/MMM-MQTT
     cd MMM-MQTT
     npm install
 
