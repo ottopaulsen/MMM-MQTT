@@ -56,6 +56,9 @@ module.exports = NodeHelper.create({
         var self = this;
 
         var mqttServer = (server.address.match(/^mqtts?:\/\//) ? '' : 'mqtt://') + server.address;
+        if (server.port) {
+            mqttServer = mqttServer + ':' + server.port
+        }
         console.log(self.name + ': Connecting to ' + mqttServer);
 
         server.client = mqtt.connect(mqttServer, server.options);
