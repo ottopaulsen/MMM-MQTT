@@ -1,4 +1,3 @@
-
 Module.register("MMM-MQTT", {
 
     getScripts: function () {
@@ -19,6 +18,7 @@ Module.register("MMM-MQTT", {
     start: function () {
         console.log(this.name + ' started.');
         this.subscriptions = [];
+        this.publications = {};
 
         console.log(this.name + ': Setting up connection to ' + this.config.mqttServers.length + ' servers');
 
@@ -40,6 +40,19 @@ Module.register("MMM-MQTT", {
                     maxAgeSeconds: sub.maxAgeSeconds
                 });
             }
+
+            if (s.publications) {
+
+                s.publications.forEach(publication => {
+                        if (!this.publications[publication.notification]) {
+                            this.publications[publication.notification] = [];
+                        }
+                        this.publications[publication.notification].push({
+                            topic: publication.topic
+                        });
+                    }
+                )
+            }
         }
 
         this.openMqttConnection();
@@ -51,6 +64,18 @@ Module.register("MMM-MQTT", {
 
     openMqttConnection: function () {
         this.sendSocketNotification('MQTT_CONFIG', this.config);
+    },
+
+    notificationReceived: function (notification, payload, sender) {
+        if (this.publications[notification]) {
+            this.publications[notification].forEach(n => {
+                this.sendSocketNotification("MQTT_PUBLISH", {
+                    notification: notification,
+                    topic: n.topic,
+                    payload
+                })
+            })
+        }
     },
 
     socketNotificationReceived: function (notification, payload) {

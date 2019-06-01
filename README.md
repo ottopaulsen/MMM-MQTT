@@ -65,6 +65,12 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                             label: 'First guest',
                             jsonpointer: '/people/0/name'
                         }
+                    ],
+                    publications: [
+                        {
+                            topic: 'calender/event',                // Topic to look for
+                            notification: 'CALENDER_EVENTS'         // Broadcast data received by `CLOCK_TICK` notification.
+                        }
                     ]
                 }
             ],
