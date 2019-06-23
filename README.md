@@ -1,27 +1,32 @@
-# MQTT
+# MQTT Publisher
 
-This module allows subscribing to a MQTT broker and publishing to a MQTT broker, allowing you to retrieve information from an IoT framework e.g. [OpenHAB](https://www.openhab.org/), [DSLinks](http://iot-dsa.org/), etc and publishing to said framework or some other MQTT broker.
+Module for [MagicMirror](https://github.com/MichMich/MagicMirror/) publishing notifications from [MM notification mechanism](https://github.com/michMich/MagicMirror/wiki/notifications) to any MQTT Broker(s).
 
-#### NB! New config!
-In order to support multiple instances and multiple servers, the configuration is totally changed! Sorry to not be backwards compatible, but I hope this solves some of the issues I have received.
+This module allows publishing to a MQTT broker e.g. an IoT framework such as [OpenHAB](https://www.openhab.org/), [DSLinks](http://iot-dsa.org/), etc, or some other MQTT broker.
 
-**Please report issues. this is not tested very much.**
+*Note: 
+Best used with [MMM-MQTT](https://github.com/ottopaulsen/MMM-MQTT) to allow subscribing to an MQTT broker and retrieving information from an MQTT Broker* 
+
+This project was forked and adapted from [@ottopaulsen](https://github.com/ottopaulsen)'s [MMM-MQTT](https://github.com/ottopaulsen/MMM-MQTT)
+
+**Any issues, please report and pull requests are most welcome**
+
+## Screenshot
+
+Shows that it is active and running. This will most likely include last send notifications with a timeout feature in future
+
+![Screenshot](doc/MQTT-Publisher.png)
 
 ## What is MQTT
 MQTT is a lightweight messaging protocol implementing the [Publish–subscribe pattern](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern), used in mainly in smart (or M2M) environments to allow devices and sensors and basically anything to communicate with anything else, requiring a MQTT broker (i.i. a [mosquitto server](https://mosquitto.org/)) [see for more info](http://mqtt.org/)
 
-## Screenshot
-
-![Screenshot](doc/MQTT.png)
-
-Module for [MagicMirror](https://github.com/MichMich/MagicMirror/) showing the payload of a message from MQTT.
 
 ## Installation
 
 Open up your terminal, navigate to `/path/to/MagicMirror/modules`. Then type in:
 
-    git clone https://github.com/ottopaulsen/MMM-MQTT
-    cd MMM-MQTT
+    git clone https://github.com/cybex-dev/MMM-MQTT-Publisher
+    cd MMM-MQTT-Publisher
     npm install
 
 ## Configuration
@@ -29,52 +34,23 @@ Open up your terminal, navigate to `/path/to/MagicMirror/modules`. Then type in:
 Here is an example configuration with description. Put it in the `MagicMirror/config/config.js` file:
 
     {
-        module: 'MMM-MQTT',
+        module: 'MMM-MQTT-Publisher',
         position: 'bottom_left',
-        header: 'MQTT',
+        header: 'MQTT Publisher',
         config: {
             mqttServers: [
                 {
-                    address: 'localhost',  // Server address or IP address
-                    port: '1883',          // Port number if other than default
-                    user: '',          // Leave out for no user
-                    password: '',  // Leave out for no password
-                    subscriptions: [
-                        {
-                            topic: 'smoky/1/inside/temperature', // Topic to look for
-                            label: 'Temperatur', // Displayed in front of value
-                            suffix: '°C',        // Displayed after the value
-                            decimals: 1,         // Round numbers to this number of decimals
-                            sortOrder: 10,       // Can be used to sort entries in the same table
-                            maxAgeSeconds: 60    // Reduce intensity if value is older
-                        },
-                        {
-                            topic: 'smoky/1/inside/humidity',
-                            label: 'Luftfuktighet',
-                            suffix: '%',
-                            decimals: 0,
-                            sortOrder: 20,
-                            maxAgeSeconds: 60
-                        },
-                        {
-                            topic: 'smoky/1/inside/smoke',
-                            label: 'Røyk',
-                            sortOrder: 30,
-                            maxAgeSeconds: 60
-                        },
-                        {
-                            topic: 'guests',
-                            label: 'First guest',
-                            jsonpointer: '/people/0/name'
-                        }
-                    ],
-                    publications: [
+                    address: 'localhost',       // Server address or IP address
+                    port: '1883',               // Port number if other than default
+                    user: '',                   // Leave out for no user
+                    password: '',               // Leave out for no password
+                    publications: [             // multiple topic, notification tuples are allowed
                         {
                             topic: 'calender/event',                // Topic to look for
                             notification: 'CALENDER_EVENTS'         // Broadcast data received by `CLOCK_TICK` notification.
-                        }
+                        },
                     ]
-                }
+                },
             ],
         }
     }
@@ -100,22 +76,7 @@ The following properties can be configured for an MQTT Server:
 | `port`             | The port which the MQTT listens on. <br> **Default value:** `1883`
 | `user`             | Username credential of the MQTT broker requires it. <br> *This can be left blank if no username is required*
 | `password`         | Password credential of the MQTT broker requires it. <br> *This can be left blank if no password is required*
-| `subscriptions`    | An array containing all subscriptions to be retrieved from MQTT broker
 | `publications`     | An array of notifications which the MQTT broker will be accepting from the MM-MQTT module.
-
-## Subscriptions
-
-MM-MQTT module allows subscribing to subscribe to a MQTT broker and retrieve information from the broker on a specific topic. A topic can be anything e.g. `clock` or `/sensors/door/frontDoor/state`. This will return the value last published to the MQTT broker. This is detailed below: 
-
-| Option             | Description
-| ------------------ | -----------
-| `topic`            | Topic to look for
-| `label`            | Displayed in front of value
-| `suffix`           | Displayed after the value
-| `decimals`         | Round numbers to this number of decimals
-| `sortOrder`        | Can be used to sort entries in the same table
-| `maxAgeSeconds`    | Reduce intensity if value is older
-| `jsonpointer`      | See **JSON Data Section** below.
 
 ### Publishing
 
@@ -164,7 +125,4 @@ Pull requests are welcome.
 
 ## TO DO
 
-
-Create a timeout, so values are deleted if they are not refreshed. May be faded out...
-
-Create a treshold so a value is flashing if outside treshold.
+Create more descriptive GUI possibly adding a list of notifications with the most recently published first. 

@@ -1,8 +1,8 @@
 {
-  "name": "MMM-MQTT",
+  "name": "MMM-MQTT-Publisher",
   "version": "0.0.1",
-  "description": "Show payload from subscribed MQTT message",
-  "author": "Otto Paulsen",
+  "description": "Publish notification payload to MQTT Broker (server)",
+  "author": "Charles Dyason",
   "dependencies": {
     "jsonpointer": "^4.0.1",
     "mqtt": "^2.18.0"

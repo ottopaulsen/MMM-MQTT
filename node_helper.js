@@ -10,7 +10,7 @@ module.exports = NodeHelper.create({
         this.loaded = false;
     },
 
-    makeServerKey: function(server){
+    makeServerKey: function (server) {
         return '' + server.address + ':' + (server.port | '1883' + server.user);
     },
 
@@ -25,19 +25,15 @@ module.exports = NodeHelper.create({
                 foundServer = true;
             }
         }
-        if(!foundServer) {
+        if (!foundServer) {
             mqttServer.serverKey = serverKey;
             mqttServer.address = server.address;
             mqttServer.port = server.port;
             mqttServer.options = {};
             mqttServer.topics = [];
             mqttServer.publications = [];
-            if(server.user) mqttServer.options.username = server.user;
-            if(server.password) mqttServer.options.password = server.password;
-        }
-
-        for(i = 0; i < server.subscriptions.length; i++){
-            mqttServer.topics.push(server.subscriptions[i].topic);
+            if (server.user) mqttServer.options.username = server.user;
+            if (server.password) mqttServer.options.password = server.password;
         }
 
         // Add all topics which the server is listening for, to the MQTT server
@@ -57,7 +53,7 @@ module.exports = NodeHelper.create({
         }
     },
 
-    startClient: function(server) {
+    startClient: function (server) {
 
         console.log(this.name + ': Starting client for: ', server);
 
@@ -79,22 +75,6 @@ module.exports = NodeHelper.create({
             server.value = 'reconnecting'; // Hmmm...
             console.log(self.name + ': ' + server.serverKey + ' reconnecting');
         });
-
-        server.client.on('connect', function (connack) {
-            console.log(self.name + ' connected to ' + mqttServer);
-            console.log(self.name + ': subscribing to ' + server.topics);
-            server.client.subscribe(server.topics);
-        });
-
-        server.client.on('message', function (topic, payload) {
-            self.sendSocketNotification('MQTT_PAYLOAD', {
-                serverKey: server.serverKey,
-                topic: topic,
-                value: payload.toString(),
-                time: Date.now()
-            });
-        });
-
     },
 
     socketNotificationReceived: function (notification, payload) {
@@ -111,13 +91,21 @@ module.exports = NodeHelper.create({
             }
             case "MQTT_PUBLISH": {
                 // filter servers based on notification of interestx
-                servers
+                servers.filter(server => server.publications.filter(pub => pub.notification === payload.notification).length !== 0)
                 // filter all mqtt servers listening for a notification
-                    .filter(server => server.publications.filter(pub => pub.notification === payload.notification).length !== 0)
-                    // Publish topic update
+
+                // Publish topic update
                     .forEach(mqttServer => {
                         // publish data
-                        mqttServer.client.publish(payload.topic, JSON.stringify(payload.payload));
+                        console.log("Publish -> " + mqttServer.serverKey);
+
+                        // for each notification in a mqtt server config
+                        mqttServer.publications.filter(pub => pub.notification === payload.notification)
+
+                            // for each topic on config
+                            .forEach(topic => {
+                                mqttServer.client.publish(topic, JSON.stringify(payload.payload));
+                            });
                     });
                 break;
             }
