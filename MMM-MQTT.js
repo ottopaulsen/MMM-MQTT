@@ -118,20 +118,20 @@ Module.register("MMM-MQTT", {
             // Label
             var labelWrapper = document.createElement("td");
             labelWrapper.innerHTML = sub.label;
-            labelWrapper.className = "align-left";
+            labelWrapper.className = "align-left mqtt-label";
             subWrapper.appendChild(labelWrapper);
 
             // Value
             tooOld = self.isValueTooOld(sub.maxAgeSeconds, sub.time);
             var valueWrapper = document.createElement("td");
             valueWrapper.innerHTML = sub.value;
-            valueWrapper.className = "align-right medium " + (tooOld ? "dimmed" : "bright");
+            valueWrapper.className = "align-right medium mqtt-value" + (tooOld ? "dimmed" : "bright");
             subWrapper.appendChild(valueWrapper);
 
             // Suffix
             var suffixWrapper = document.createElement("td");
             suffixWrapper.innerHTML = sub.suffix;
-            suffixWrapper.className = "align-left";
+            suffixWrapper.className = "align-left mqtt-suffix";
             subWrapper.appendChild(suffixWrapper);
 
             wrapper.appendChild(subWrapper);

@@ -78,6 +78,16 @@ mqttServers is an array, so you can add multiple servers to the same config. You
 
 If the payload contains JSON data, use the jsonpointer configuration to get the value. See [JSON Ponter specification](https://tools.ietf.org/html/rfc6901) or google an easier description.
 
+## Styling
+
+Styling can be done in the `MQTT.css` file. The table header can be styled using locator `#module_3_MMM-MQTT > header`. The column text can be styled using the following classes:
+
+```css
+.mqtt-label {}
+.mqtt-value {}
+.mqtt-suffix {}
+```
+
 ## Collaborate
 
 Pull requests are welcome.
