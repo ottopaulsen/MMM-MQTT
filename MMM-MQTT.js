@@ -3,7 +3,8 @@ Module.register("MMM-MQTT", {
 
     getScripts: function () {
         return [
-            this.file('node_modules/jsonpointer/jsonpointer.js')
+            this.file('node_modules/jsonpointer/jsonpointer.js'),
+            'topics_match.js'
         ];
     },
 
@@ -58,7 +59,7 @@ Module.register("MMM-MQTT", {
             if (payload != null) {
                 for (i = 0; i < this.subscriptions.length; i++) {
                     sub = this.subscriptions[i];
-                    if (sub.serverKey == payload.serverKey && sub.topic == payload.topic) {
+                    if (sub.serverKey == payload.serverKey && topicsMatch(sub.topic, payload.topic)) {
                         var value = payload.value;
                         // Extract value if JSON Pointer is configured
                         if (sub.jsonpointer) {

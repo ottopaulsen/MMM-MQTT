@@ -3,3 +3,5 @@ t.js
 t?.js
 node_modules/
 config.js
+
+.vscode/

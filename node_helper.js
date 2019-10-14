@@ -1,5 +1,5 @@
-var mqtt = require('mqtt');
-var NodeHelper = require("node_helper");
+const mqtt = require('mqtt');
+const NodeHelper = require("node_helper");
 
 var servers = [];
 
@@ -79,6 +79,12 @@ module.exports = NodeHelper.create({
         });
 
         server.client.on('message', function (topic, payload) {
+            console.log('Received topic ' + topic + ', payload ' + payload);
+            console.log('Sending serverKey = ' + server.serverKey
+                + ', topic = ' + topic
+                + ', value = ' + payload.toString()
+                + ', time = ' + Date.now()
+            )
             self.sendSocketNotification('MQTT_PAYLOAD', {
                 serverKey: server.serverKey,
                 topic: topic,
