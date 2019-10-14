@@ -3,9 +3,16 @@
   "version": "0.0.1",
   "description": "Show payload from subscribed MQTT message",
   "author": "Otto Paulsen",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ottopaulsen/MMM-MQTT.git"
+  },
+  "license": "MIT",
   "dependencies": {
+    "extend": "^3.0.2",
     "jsonpointer": "^4.0.1",
     "mocha": "^6.2.1",
-    "mqtt": "^2.18.0"
+    "mqtt": "^2.18.0",
+    "mqtt-packet": "^6.2.1"
   }
 }
