@@ -126,7 +126,7 @@ Module.register("MMM-MQTT", {
             tooOld = self.isValueTooOld(sub.maxAgeSeconds, sub.time);
             var valueWrapper = document.createElement("td");
             valueWrapper.innerHTML = sub.value;
-            valueWrapper.className = "align-right medium mqtt-value" + (tooOld ? "dimmed" : "bright");
+            valueWrapper.className = "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
             subWrapper.appendChild(valueWrapper);
 
             // Suffix
