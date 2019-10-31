@@ -5,6 +5,12 @@ var servers = [];
 
 module.exports = NodeHelper.create({
 
+    log: function (...args) {
+        if (this.config.logging) {
+            console.log(args);
+        }
+    },
+
     start: function () {
         console.log(this.name + ': Starting node helper');
         this.loaded = false;
@@ -79,8 +85,8 @@ module.exports = NodeHelper.create({
         });
 
         server.client.on('message', function (topic, payload) {
-            console.log('Received topic ' + topic + ', payload ' + payload);
-            console.log('Sending serverKey = ' + server.serverKey
+            log('Received topic ' + topic + ', payload ' + payload);
+            log('Sending serverKey = ' + server.serverKey
                 + ', topic = ' + topic
                 + ', value = ' + payload.toString()
                 + ', time = ' + Date.now()
@@ -96,7 +102,7 @@ module.exports = NodeHelper.create({
     },
 
     socketNotificationReceived: function (notification, payload) {
-        console.log(this.name + ': Socket notification received: ', notification, ': ', payload);
+        log(this.name + ': Socket notification received: ', notification, ': ', payload);
         var self = this;
         if (notification === 'MQTT_CONFIG') {
             var config = payload;

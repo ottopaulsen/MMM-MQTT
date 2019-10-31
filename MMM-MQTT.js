@@ -1,6 +1,12 @@
 
 Module.register("MMM-MQTT", {
 
+    log: function (...args) {
+        if (this.config.logging) {
+            console.log(args);
+        }
+    },
+
     getScripts: function () {
         return [
             this.file('node_modules/jsonpointer/jsonpointer.js'),
@@ -10,7 +16,8 @@ Module.register("MMM-MQTT", {
 
     // Default module config
     defaults: {
-        mqttServers: []
+        mqttServers: [],
+        logging: false
     },
 
     makeServerKey: function (server) {
