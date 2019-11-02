@@ -85,12 +85,6 @@ module.exports = NodeHelper.create({
         });
 
         server.client.on('message', function (topic, payload) {
-            log('Received topic ' + topic + ', payload ' + payload);
-            log('Sending serverKey = ' + server.serverKey
-                + ', topic = ' + topic
-                + ', value = ' + payload.toString()
-                + ', time = ' + Date.now()
-            )
             self.sendSocketNotification('MQTT_PAYLOAD', {
                 serverKey: server.serverKey,
                 topic: topic,
@@ -102,7 +96,6 @@ module.exports = NodeHelper.create({
     },
 
     socketNotificationReceived: function (notification, payload) {
-        log(this.name + ': Socket notification received: ', notification, ': ', payload);
         var self = this;
         if (notification === 'MQTT_CONFIG') {
             var config = payload;
