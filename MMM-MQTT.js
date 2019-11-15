@@ -17,8 +17,7 @@ Module.register("MMM-MQTT", {
     // Default module config
     defaults: {
         mqttServers: [],
-        logging: false,
-        valueSize: 'medium'
+        logging: false
     },
 
     makeServerKey: function (server) {
