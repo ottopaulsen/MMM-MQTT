@@ -45,7 +45,8 @@ Module.register("MMM-MQTT", {
                     suffix: typeof (sub.suffix) == 'undefined' ? '' : sub.suffix,
                     value: '',
                     time: Date.now(),
-                    maxAgeSeconds: sub.maxAgeSeconds
+                    maxAgeSeconds: sub.maxAgeSeconds,
+                    sortOrder: sub.sortOrder | i * 10 + j
                 });
             }
         }
@@ -120,7 +121,10 @@ Module.register("MMM-MQTT", {
             return wrapper;
         }
 
-        self.subscriptions.forEach(function (sub) {
+        self.subscriptions.sort((a, b) => {
+            console.log("Sorintg: ", a, b);
+            return a.sortOrder - b.sortOrder;
+        }).forEach(function (sub) {
             var subWrapper = document.createElement("tr");
 
             // Label
