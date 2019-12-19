@@ -1,16 +1,11 @@
 # MQTT
 
-## NB! New config!
-
-In order to support multiple instances and multiple servers, the configuration is totally changed! Sorry to not be backwards compatible, but I hope this solves some of the issues I have received.
-
-Please report issues. his is not tested very much.
+Module for [MagicMirror](https://github.com/MichMich/MagicMirror/) showing the payload of a message from MQTT.
 
 ## Screenshot
 
 ![Screenshot](doc/MQTT.png)
 
-Module for [MagicMirror](https://github.com/MichMich/MagicMirror/) showing the payload of a message from MQTT.
 
 ## Installasjon
 
@@ -31,6 +26,8 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
         position: 'bottom_left',
         header: 'MQTT',
         config: {
+            logging: false,
+            useWildcards: false,
             mqttServers: [
                 {
                     address: 'localhost',  // Server address or IP address
@@ -77,6 +74,10 @@ mqttServers is an array, so you can add multiple servers to the same config. You
 ### JSON Data
 
 If the payload contains JSON data, use the jsonpointer configuration to get the value. See [JSON Ponter specification](https://tools.ietf.org/html/rfc6901) or google an easier description.
+
+### Wildcards
+
+Wildcard "+" is supported in topics, but it only works on some platforms (Chrome, Electron). Set the useWildcards config to true for wildcards to work.
 
 ## Styling
 

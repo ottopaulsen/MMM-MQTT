@@ -17,7 +17,8 @@ Module.register("MMM-MQTT", {
     // Default module config
     defaults: {
         mqttServers: [],
-        logging: false
+        logging: false,
+        useWildcards: false
     },
 
     makeServerKey: function (server) {
@@ -67,7 +68,10 @@ Module.register("MMM-MQTT", {
             if (payload != null) {
                 for (i = 0; i < this.subscriptions.length; i++) {
                     sub = this.subscriptions[i];
-                    if (sub.serverKey == payload.serverKey && topicsMatch(sub.topic, payload.topic)) {
+                    if (sub.serverKey == payload.serverKey && 
+                            this.config.useWildcards
+                                ? topicsMatch(sub.topic, payload.topic)
+                                : sub.topic == payload.topic) {
                         var value = payload.value;
                         // Extract value if JSON Pointer is configured
                         if (sub.jsonpointer) {
@@ -122,7 +126,6 @@ Module.register("MMM-MQTT", {
         }
 
         self.subscriptions.sort((a, b) => {
-            console.log("Sorintg: ", a, b);
             return a.sortOrder - b.sortOrder;
         }).forEach(function (sub) {
             var subWrapper = document.createElement("tr");
