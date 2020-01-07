@@ -47,7 +47,7 @@ Module.register("MMM-MQTT", {
                     value: '',
                     time: Date.now(),
                     maxAgeSeconds: sub.maxAgeSeconds,
-                    sortOrder: sub.sortOrder | i * 10 + j
+                    sortOrder: sub.sortOrder | i * 100 + j
                 });
             }
         }
