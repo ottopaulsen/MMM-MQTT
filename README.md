@@ -37,7 +37,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                     subscriptions: [
                         {
                             topic: 'smoky/1/inside/temperature', // Topic to look for
-                            label: 'Temperatur', // Displayed in front of value
+                            label: 'Temperature',// Displayed in front of the value
                             suffix: '°C',        // Displayed after the value
                             decimals: 1,         // Round numbers to this number of decimals
                             sortOrder: 10,       // Can be used to sort entries in the same table
@@ -69,7 +69,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
     }
 
 
-mqttServers is an array, so you can add multiple servers to the same config. You can also use the module multiple places on the mirror/screen.
+mqttServers is an array, so you can add multiple servers to the same config. You can also use the module in multiple places on the mirror/screen.
 
 ### JSON Data
 
@@ -78,6 +78,18 @@ If the payload contains JSON data, use the jsonpointer configuration to get the 
 ### Wildcards
 
 Wildcard "+" is supported in topics, but it only works on some platforms (Chrome, Electron). Set the useWildcards config to true for wildcards to work.
+
+### Eval
+
+For further customization of values, you can provide a js valid expression which will be evaluated using eval() at runtime. Use the token ${value} as a placeholder for the value coming in from the MQTT message. For example, the following subscription will extract the system uptime in seconds using the jsonpointer from a json payload, and will then use evalexp to divide the value by 60. This will convert uptime in seconds to uptime in minutes:
+
+    {
+        topic: 'smoky/1/inside/uptime',
+        label: 'Uptime',
+        suffix: 'mins',
+        jsonpointer: 'Smoky/System/UptimeSec',
+        evalexp: '${value} / 60'
+    },
 
 ## Styling
 
@@ -98,4 +110,4 @@ Pull requests are welcome.
 
 Create a timeout, so values are deleted if they are not refreshed. May be faded out...
 
-Create a treshold so a value is flashing if outside treshold.
+Create a threshold so a value is flashing if outside threshold.

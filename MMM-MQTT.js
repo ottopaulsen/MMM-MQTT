@@ -43,6 +43,7 @@ Module.register("MMM-MQTT", {
                     topic: sub.topic,
                     decimals: sub.decimals,
                     jsonpointer: sub.jsonpointer,
+                    evalexp: sub.evalexp,
                     suffix: typeof (sub.suffix) == 'undefined' ? '' : sub.suffix,
                     value: '',
                     time: Date.now(),
@@ -76,6 +77,10 @@ Module.register("MMM-MQTT", {
                         // Extract value if JSON Pointer is configured
                         if (sub.jsonpointer) {
                             value = get(JSON.parse(value), sub.jsonpointer);
+                        }
+                        // Evaluate the expression if evalexp is configured
+                        if (sub.evalexp) {
+                          value = eval(sub.evalexp.replace("${value}", value));
                         }
                         // Round if decimals is configured
                         if (isNaN(sub.decimals) == false) {
@@ -115,12 +120,12 @@ Module.register("MMM-MQTT", {
     getDom: function () {
         self = this;
         var wrapper = document.createElement("table");
-        wrapper.className = "small";
+        wrapper.className = "xsmall";
         var first = true;
 
         if (self.subscriptions.length === 0) {
             wrapper.innerHTML = (self.loaded) ? self.translate("EMPTY") : self.translate("LOADING");
-            wrapper.className = "small dimmed";
+            wrapper.className = "xsmall dimmed";
             console.log(self.name + ': No values');
             return wrapper;
         }
@@ -140,7 +145,7 @@ Module.register("MMM-MQTT", {
             tooOld = self.isValueTooOld(sub.maxAgeSeconds, sub.time);
             var valueWrapper = document.createElement("td");
             valueWrapper.innerHTML = sub.value;
-            valueWrapper.className = "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
+            valueWrapper.className = "align-right xsmall mqtt-value " + (tooOld ? "dimmed" : "bright");
             subWrapper.appendChild(valueWrapper);
 
             // Suffix
