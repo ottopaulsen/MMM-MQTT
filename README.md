@@ -7,7 +7,7 @@ Module for [MagicMirror](https://github.com/MichMich/MagicMirror/) showing the p
 ![Screenshot](doc/MQTT.png)
 
 
-## Installation
+## Installasjon
 
 Go to `MagicMirror/modules` and write
 
@@ -61,14 +61,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                             topic: 'guests',
                             label: 'First guest',
                             jsonpointer: '/people/0/name'
-                        {
-                            topic: 'zigbee2mqtt/contactSensor1',
-                            label: 'Front door',
-                            jsonpointer: '/contact',
-                            boolean: true,
-                            true: 'Closed',
-                            false: 'Open'
-                            }
+                        }
                     ]
                 }
             ],
@@ -95,14 +88,6 @@ Styling can be done in the `MQTT.css` file. The table header can be styled using
 .mqtt-value {}
 .mqtt-suffix {}
 ```
-
-## Boolean values
-
-In the case of boolean values, you can now define what you want the module to display in sted of true or false:
-
-                            boolean: true,
-                            true: 'Closed',
-                            false: 'Open'
 
 ## Collaborate
 
