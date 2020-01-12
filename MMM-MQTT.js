@@ -42,6 +42,9 @@ Module.register("MMM-MQTT", {
                     label: sub.label,
                     topic: sub.topic,
                     decimals: sub.decimals,
+                    isBool: sub.boolean,
+                    valTrue: sub.true,
+                    valFalse: sub.false,
                     jsonpointer: sub.jsonpointer,
                     suffix: typeof (sub.suffix) == 'undefined' ? '' : sub.suffix,
                     value: '',
@@ -139,7 +142,11 @@ Module.register("MMM-MQTT", {
             // Value
             tooOld = self.isValueTooOld(sub.maxAgeSeconds, sub.time);
             var valueWrapper = document.createElement("td");
-            valueWrapper.innerHTML = sub.value;
+            if(sub.isBool == true){
+                if(sub.value == true) valueWrapper.innerHTML = sub.valTrue;
+                else valueWrapper.innerHTML = sub.valFalse;
+            }
+            else valueWrapper.innerHTML = sub.value;
             valueWrapper.className = "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
             subWrapper.appendChild(valueWrapper);
 
