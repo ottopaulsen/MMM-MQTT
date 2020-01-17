@@ -60,7 +60,7 @@ Module.register("MMM-MQTT", {
           maxAgeSeconds: sub.maxAgeSeconds,
           sortOrder: sub.sortOrder || i * 100 + j,
           colors: sub.colors,
-          convertions: sub.convertions
+          conversions: sub.conversions
         });
       }
     }
@@ -141,12 +141,12 @@ Module.register("MMM-MQTT", {
   },
 
   convertValue: function(sub) {
-    if (!sub.convertions || sub.convertions.length == 0) {
+    if (!sub.conversions || sub.conversions.length == 0) {
       return sub.value;
     }
-    for (i = 0; i < sub.convertions.length; i++) {
-      if (sub.value == sub.convertions[i].from) {
-        return sub.convertions[i].to;
+    for (i = 0; i < sub.conversions.length; i++) {
+      if (sub.value == sub.conversions[i].from) {
+        return sub.conversions[i].to;
       }
     }
     return sub.value;
