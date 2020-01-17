@@ -132,12 +132,15 @@ Module.register("MMM-MQTT", {
   },
 
   getColors: function(sub) {
+    console.log(sub.topic);
+    console.log("Colors:", sub.colors);
+    console.log("Value: ", sub.value);
     if (!sub.colors || sub.colors.length == 0) {
       return {};
     }
 
     let colors;
-    for (i = 1; i < sub.colors.length; i++) {
+    for (i = 0; i < sub.colors.length; i++) {
       colors = sub.colors[i];
       if (sub.value < sub.colors[i].upTo) {
         break;

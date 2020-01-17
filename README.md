@@ -97,7 +97,7 @@ Wildcard "+" is supported in topics, but it only works on some platforms (Chrome
 
 Use the conversions config to convert values from one to another. If there is no match, the received value is used.
 
-For numeric values, you can use `multiply` or `divide` to multiply or divide values before they are displayed.
+For numeric values, you can use `multiply` or `divide` to multiply or divide values before they are displayed. See example with `divide` above.
 
 ### Colored values
 
