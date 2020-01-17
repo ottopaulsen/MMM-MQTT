@@ -60,7 +60,9 @@ Module.register("MMM-MQTT", {
           maxAgeSeconds: sub.maxAgeSeconds,
           sortOrder: sub.sortOrder || i * 100 + j,
           colors: sub.colors,
-          conversions: sub.conversions
+          conversions: sub.conversions,
+          multiply: sub.multiply,
+          divide: sub.divide
         });
       }
     }
@@ -87,10 +89,15 @@ Module.register("MMM-MQTT", {
               : sub.topic == payload.topic
           ) {
             var value = payload.value;
+
             // Extract value if JSON Pointer is configured
             if (sub.jsonpointer) {
               value = get(JSON.parse(value), sub.jsonpointer);
             }
+
+            // Multiply or divide
+            value = this.multiply(sub, value);
+
             // Round if decimals is configured
             if (isNaN(sub.decimals) == false) {
               if (isNaN(value) == false) {
@@ -138,6 +145,20 @@ Module.register("MMM-MQTT", {
     }
 
     return colors;
+  },
+
+  multiply: function(sub, value) {
+    if (!sub.multiply && !sub.divide) {
+      return value;
+    }
+    if (!value) {
+      return value;
+    }
+    if (isNaN(value)) {
+      return value;
+    }
+    let res = (+value * (sub.multiply || 1)) / (sub.divide || 1);
+    return isNaN(res) ? value : "" + res;
   },
 
   convertValue: function(sub) {

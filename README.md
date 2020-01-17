@@ -60,6 +60,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                         topic: 'smoky/1/inside/smoke',
                         label: 'Røyk',
                         sortOrder: 30,
+                        divide: 10, // Divide numeric values. Alternatively use `multiply`.
                         maxAgeSeconds: 60
                     },
                     {
@@ -95,6 +96,8 @@ Wildcard "+" is supported in topics, but it only works on some platforms (Chrome
 ### Conversions
 
 Use the conversions config to convert values from one to another. If there is no match, the received value is used.
+
+For numeric values, you can use `multiply` or `divide` to multiply or divide values before they are displayed.
 
 ### Colored values
 
