@@ -87,6 +87,23 @@ Wildcard "+" is supported in topics, but it only works on some platforms (Chrome
 ## Styling
 
 For numeric values, color codes can be configured using the colors array in the subscription config.
+If you are using the same color scheme on multiple topics, you can configure it as a constant above the config variable like this:
+
+```javascript
+const humidityColors = [
+  {upTo: 95, value: ''},
+  {upTo: 100, value: '#1a1aff'},
+];
+
+var config = {
+    ...
+```
+
+and then refer to it like this:
+
+```javascript
+colors: humidityColors;
+```
 
 General styling can be done in the `MQTT.css` file. The table header can be styled using locator `#module_3_MMM-MQTT > header`. The column text can be styled using the following classes:
 
