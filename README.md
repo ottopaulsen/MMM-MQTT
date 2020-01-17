@@ -35,12 +35,12 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                 subscriptions: [
                     {
                         topic: 'smoky/1/inside/temperature', // Topic to look for
-                        label: 'Temperatur', // Displayed in front of value
-                        suffix: '°C',        // Displayed after the value
-                        decimals: 1,         // Round numbers to this number of decimals
-                        sortOrder: 10,       // Can be used to sort entries in the same table
-                        maxAgeSeconds: 60,   // Reduce intensity if value is older
-                        colors: [            // Value dependent colors
+                        label: 'Temperature', // Displayed in front of value
+                        suffix: '°C',         // Displayed after the value
+                        decimals: 1,          // Round numbers to this number of decimals
+                        sortOrder: 10,        // Can be used to sort entries in the same table
+                        maxAgeSeconds: 60,    // Reduce intensity if value is older
+                        colors: [             // Value dependent colors
                             { upTo: -10, value: "blue", label: "blue", suffix: "blue" },
                             { upTo: 0, value: "#00ccff", label: "#00ccff", suffix: "#00ccff" },
                             { upTo: 10, value: "yellow"},
@@ -66,6 +66,14 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                         topic: 'guests',
                         label: 'First guest',
                         jsonpointer: '/people/0/name'
+                    },
+                    {
+                        topic: "house/1/doors/1",
+                        label: "Door",
+                        convertions: [
+                        { from: "true", to: "Open" },
+                        { from: "false", to: "Closed" }
+                        ]
                     }
                 ]
             }
@@ -74,7 +82,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
 }
 ```
 
-mqttServers is an array, so you can add multiple servers to the same config. You can also use the module multiple places on the mirror/screen.
+mqttServers is an array, so you can add multiple servers to the same config. You can also use the module in multiple places on the mirror/screen.
 
 ### JSON Data
 
@@ -83,6 +91,10 @@ If the payload contains JSON data, use the jsonpointer configuration to get the 
 ### Wildcards
 
 Wildcard "+" is supported in topics, but it only works on some platforms (Chrome, Electron). Set the useWildcards config to true for wildcards to work.
+
+## Convertions
+
+Use the convertions config to convert values from one to another. If there is no match, the received value is used.
 
 ## Styling
 
@@ -124,4 +136,4 @@ Pull requests are welcome.
 
 Create a timeout, so values are deleted if they are not refreshed. May be faded out...
 
-Create a treshold so a value is flashing if outside treshold.
+Create a threshold so a value is flashing if outside threshold.

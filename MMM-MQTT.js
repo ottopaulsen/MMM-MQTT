@@ -59,7 +59,8 @@ Module.register("MMM-MQTT", {
           time: Date.now(),
           maxAgeSeconds: sub.maxAgeSeconds,
           sortOrder: sub.sortOrder || i * 100 + j,
-          colors: sub.colors
+          colors: sub.colors,
+          convertions: sub.convertions
         });
       }
     }
@@ -139,6 +140,18 @@ Module.register("MMM-MQTT", {
     return colors;
   },
 
+  convertValue: function(sub) {
+    if (!sub.convertions || sub.convertions.length == 0) {
+      return sub.value;
+    }
+    for (i = 0; i < sub.convertions.length; i++) {
+      if (sub.value == sub.convertions[i].from) {
+        return sub.convertions[i].to;
+      }
+    }
+    return sub.value;
+  },
+
   getDom: function() {
     self = this;
     var wrapper = document.createElement("table");
@@ -171,7 +184,7 @@ Module.register("MMM-MQTT", {
         // Value
         tooOld = self.isValueTooOld(sub.maxAgeSeconds, sub.time);
         var valueWrapper = document.createElement("td");
-        valueWrapper.innerHTML = sub.value;
+        valueWrapper.innerHTML = self.convertValue(sub);
         valueWrapper.className =
           "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
         valueWrapper.style.color = colors.value;
