@@ -6,7 +6,6 @@ Module for [MagicMirror](https://github.com/MichMich/MagicMirror/) showing the p
 
 ![Screenshot](doc/MQTT.png)
 
-
 ## Installasjon
 
 Go to `MagicMirror/modules` and write
@@ -15,59 +14,65 @@ Go to `MagicMirror/modules` and write
     cd MMM-MQTT
     npm install
 
-
-
 ## Configuration
 
 Here is an example configuration with description. Put it in the `MagicMirror/config/config.js` file:
 
-    {
-        module: 'MMM-MQTT',
-        position: 'bottom_left',
-        header: 'MQTT',
-        config: {
-            logging: false,
-            useWildcards: false,
-            mqttServers: [
-                {
-                    address: 'localhost',  // Server address or IP address
-                    port: '1883',          // Port number if other than default
-                    user: 'user',          // Leave out for no user
-                    password: 'password',  // Leave out for no password
-                    subscriptions: [
-                        {
-                            topic: 'smoky/1/inside/temperature', // Topic to look for
-                            label: 'Temperatur', // Displayed in front of value
-                            suffix: '°C',        // Displayed after the value
-                            decimals: 1,         // Round numbers to this number of decimals
-                            sortOrder: 10,       // Can be used to sort entries in the same table
-                            maxAgeSeconds: 60    // Reduce intensity if value is older
-                        },
-                        {
-                            topic: 'smoky/1/inside/humidity',
-                            label: 'Luftfuktighet',
-                            suffix: '%',
-                            decimals: 0,
-                            sortOrder: 20,
-                            maxAgeSeconds: 60
-                        },
-                        {
-                            topic: 'smoky/1/inside/smoke',
-                            label: 'Røyk',
-                            sortOrder: 30,
-                            maxAgeSeconds: 60
-                        },
-                        {
-                            topic: 'guests',
-                            label: 'First guest',
-                            jsonpointer: '/people/0/name'
-                        }
-                    ]
-                }
-            ],
-        }
+```javascript
+{
+    module: 'MMM-MQTT',
+    position: 'bottom_left',
+    header: 'MQTT',
+    config: {
+        logging: false,
+        useWildcards: false,
+        mqttServers: [
+            {
+                address: 'localhost',  // Server address or IP address
+                port: '1883',          // Port number if other than default
+                user: 'user',          // Leave out for no user
+                password: 'password',  // Leave out for no password
+                subscriptions: [
+                    {
+                        topic: 'smoky/1/inside/temperature', // Topic to look for
+                        label: 'Temperatur', // Displayed in front of value
+                        suffix: '°C',        // Displayed after the value
+                        decimals: 1,         // Round numbers to this number of decimals
+                        sortOrder: 10,       // Can be used to sort entries in the same table
+                        maxAgeSeconds: 60,   // Reduce intensity if value is older
+                        colors: [            // Value dependent colors
+                            { upTo: -10, value: "blue", label: "blue", suffix: "blue" },
+                            { upTo: 0, value: "#00ccff", label: "#00ccff", suffix: "#00ccff" },
+                            { upTo: 10, value: "yellow"},
+                            { upTo: 25, label: "green", suffix: "green" },
+                            { upTo: 100, label: "red" }, // The last one is used for higher values too
+                        ],
+                    },
+                    {
+                        topic: 'smoky/1/inside/humidity',
+                        label: 'Luftfuktighet',
+                        suffix: '%',
+                        decimals: 0,
+                        sortOrder: 20,
+                        maxAgeSeconds: 60
+                    },
+                    {
+                        topic: 'smoky/1/inside/smoke',
+                        label: 'Røyk',
+                        sortOrder: 30,
+                        maxAgeSeconds: 60
+                    },
+                    {
+                        topic: 'guests',
+                        label: 'First guest',
+                        jsonpointer: '/people/0/name'
+                    }
+                ]
+            }
+        ],
     }
-
+}
+```
 
 mqttServers is an array, so you can add multiple servers to the same config. You can also use the module multiple places on the mirror/screen.
 
@@ -81,12 +86,17 @@ Wildcard "+" is supported in topics, but it only works on some platforms (Chrome
 
 ## Styling
 
-Styling can be done in the `MQTT.css` file. The table header can be styled using locator `#module_3_MMM-MQTT > header`. The column text can be styled using the following classes:
+For numeric values, color codes can be configured using the colors array in the subscription config.
+
+General styling can be done in the `MQTT.css` file. The table header can be styled using locator `#module_3_MMM-MQTT > header`. The column text can be styled using the following classes:
 
 ```css
-.mqtt-label {}
-.mqtt-value {}
-.mqtt-suffix {}
+.mqtt-label {
+}
+.mqtt-value {
+}
+.mqtt-suffix {
+}
 ```
 
 ## Collaborate
@@ -94,7 +104,6 @@ Styling can be done in the `MQTT.css` file. The table header can be styled using
 Pull requests are welcome.
 
 ## TO DO
-
 
 Create a timeout, so values are deleted if they are not refreshed. May be faded out...
 

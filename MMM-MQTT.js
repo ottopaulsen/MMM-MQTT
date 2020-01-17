@@ -58,7 +58,8 @@ Module.register("MMM-MQTT", {
           value: "",
           time: Date.now(),
           maxAgeSeconds: sub.maxAgeSeconds,
-          sortOrder: sub.sortOrder || i * 100 + j
+          sortOrder: sub.sortOrder || i * 100 + j,
+          colors: sub.colors
         });
       }
     }
@@ -122,11 +123,26 @@ Module.register("MMM-MQTT", {
     return false;
   },
 
+  getColors: function(sub) {
+    if (!sub.colors || sub.colors.length == 0) {
+      return {};
+    }
+
+    let colors;
+    for (i = 1; i < sub.colors.length; i++) {
+      colors = sub.colors[i];
+      if (sub.value < sub.colors[i].upTo) {
+        break;
+      }
+    }
+
+    return colors;
+  },
+
   getDom: function() {
     self = this;
     var wrapper = document.createElement("table");
     wrapper.className = "small";
-    var first = true;
 
     if (self.subscriptions.length === 0) {
       wrapper.innerHTML = self.loaded
@@ -143,11 +159,13 @@ Module.register("MMM-MQTT", {
       })
       .forEach(function(sub) {
         var subWrapper = document.createElement("tr");
+        let colors = self.getColors(sub);
 
         // Label
         var labelWrapper = document.createElement("td");
         labelWrapper.innerHTML = sub.label;
         labelWrapper.className = "align-left mqtt-label";
+        labelWrapper.style.color = colors.label;
         subWrapper.appendChild(labelWrapper);
 
         // Value
@@ -156,6 +174,7 @@ Module.register("MMM-MQTT", {
         valueWrapper.innerHTML = sub.value;
         valueWrapper.className =
           "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
+        valueWrapper.style.color = colors.value;
         subWrapper.appendChild(valueWrapper);
 
         // Suffix
@@ -163,6 +182,7 @@ Module.register("MMM-MQTT", {
         suffixWrapper.innerHTML = sub.suffix;
         suffixWrapper.className = "align-left mqtt-suffix";
         subWrapper.appendChild(suffixWrapper);
+        subWrapper.style.color = colors.suffix;
 
         wrapper.appendChild(subWrapper);
       });
