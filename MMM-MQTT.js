@@ -211,7 +211,9 @@ Module.register("MMM-MQTT", {
         valueWrapper.innerHTML = self.convertValue(sub);
         valueWrapper.className =
           "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
-        valueWrapper.style.color = colors.value;
+        valueWrapper.style.color = tooOld
+          ? valueWrapper.style.color
+          : colors.value;
         subWrapper.appendChild(valueWrapper);
 
         // Suffix
