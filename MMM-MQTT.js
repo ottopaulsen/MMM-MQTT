@@ -1,14 +1,14 @@
 Module.register("MMM-MQTT", {
-  log: function(...args) {
+  log: function (...args) {
     if (this.config.logging) {
-      console.log(args);
+      args.forEach((arg) => console.log(arg));
     }
   },
 
-  getScripts: function() {
+  getScripts: function () {
     return [
       this.file("node_modules/jsonpointer/jsonpointer.js"),
-      "topics_match.js"
+      "topics_match.js",
     ];
   },
 
@@ -16,14 +16,14 @@ Module.register("MMM-MQTT", {
   defaults: {
     mqttServers: [],
     logging: false,
-    useWildcards: false
+    useWildcards: false,
   },
 
-  makeServerKey: function(server) {
+  makeServerKey: function (server) {
     return "" + server.address + ":" + (server.port | ("1883" + server.user));
   },
 
-  start: function() {
+  start: function () {
     console.log(this.name + " started.");
     this.subscriptions = [];
 
@@ -62,23 +62,23 @@ Module.register("MMM-MQTT", {
           colors: sub.colors,
           conversions: sub.conversions,
           multiply: sub.multiply,
-          divide: sub.divide
+          divide: sub.divide,
         });
       }
     }
 
     this.openMqttConnection();
     var self = this;
-    setInterval(function() {
+    setInterval(function () {
       self.updateDom(100);
     }, 5000);
   },
 
-  openMqttConnection: function() {
+  openMqttConnection: function () {
     this.sendSocketNotification("MQTT_CONFIG", this.config);
   },
 
-  socketNotificationReceived: function(notification, payload) {
+  socketNotificationReceived: function (notification, payload) {
     if (notification === "MQTT_PAYLOAD") {
       if (payload != null) {
         for (i = 0; i < this.subscriptions.length; i++) {
@@ -115,11 +115,11 @@ Module.register("MMM-MQTT", {
     }
   },
 
-  getStyles: function() {
+  getStyles: function () {
     return ["MQTT.css"];
   },
 
-  isValueTooOld: function(maxAgeSeconds, updatedTime) {
+  isValueTooOld: function (maxAgeSeconds, updatedTime) {
     // console.log(this.name + ': maxAgeSeconds = ', maxAgeSeconds);
     // console.log(this.name + ': updatedTime = ', updatedTime);
     // console.log(this.name + ': Date.now() = ', Date.now());
@@ -131,10 +131,10 @@ Module.register("MMM-MQTT", {
     return false;
   },
 
-  getColors: function(sub) {
-    console.log(sub.topic);
-    console.log("Colors:", sub.colors);
-    console.log("Value: ", sub.value);
+  getColors: function (sub) {
+    this.log(sub.topic);
+    this.log("Colors:", sub.colors);
+    this.log("Value: ", sub.value);
     if (!sub.colors || sub.colors.length == 0) {
       return {};
     }
@@ -150,7 +150,7 @@ Module.register("MMM-MQTT", {
     return colors;
   },
 
-  multiply: function(sub, value) {
+  multiply: function (sub, value) {
     if (!sub.multiply && !sub.divide) {
       return value;
     }
@@ -164,7 +164,7 @@ Module.register("MMM-MQTT", {
     return isNaN(res) ? value : "" + res;
   },
 
-  convertValue: function(sub) {
+  convertValue: function (sub) {
     if (!sub.conversions || sub.conversions.length == 0) {
       return sub.value;
     }
@@ -176,7 +176,7 @@ Module.register("MMM-MQTT", {
     return sub.value;
   },
 
-  getDom: function() {
+  getDom: function () {
     self = this;
     var wrapper = document.createElement("table");
     wrapper.className = "small";
@@ -194,7 +194,7 @@ Module.register("MMM-MQTT", {
       .sort((a, b) => {
         return a.sortOrder - b.sortOrder;
       })
-      .forEach(function(sub) {
+      .forEach(function (sub) {
         var subWrapper = document.createElement("tr");
         let colors = self.getColors(sub);
 
@@ -225,5 +225,5 @@ Module.register("MMM-MQTT", {
       });
 
     return wrapper;
-  }
+  },
 });
