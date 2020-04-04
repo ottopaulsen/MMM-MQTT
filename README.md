@@ -99,6 +99,21 @@ Use the conversions config to convert values from one to another. If there is no
 
 For numeric values, you can use `multiply` or `divide` to multiply or divide values before they are displayed. See example with `divide` above.
 
+You can also use this to display icons. Example:
+
+```javascript
+conversions: [
+  {
+    from: "on",
+    to: "<i class='fas fa-toggle-on' style='color:green'></i>"
+  },
+  {
+    from: "off",
+    to: "<i class='fas fa-toggle-off' style='color:red'></i>"
+  }
+];
+```
+
 ### Colored values
 
 For numeric values, color codes can be configured using the colors array in the subscription config.
