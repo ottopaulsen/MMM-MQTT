@@ -169,7 +169,7 @@ Module.register("MMM-MQTT", {
       return sub.value;
     }
     for (i = 0; i < sub.conversions.length; i++) {
-      if (sub.value == sub.conversions[i].from) {
+      if (("" + sub.value).trim() == ("" + sub.conversions[i].from).trim()) {
         return sub.conversions[i].to;
       }
     }
