@@ -4,22 +4,22 @@ const NodeHelper = require("node_helper");
 var servers = [];
 
 module.exports = NodeHelper.create({
-  log: function(...args) {
+  log: function (...args) {
     if (this.config.logging) {
       console.log(args);
     }
   },
 
-  start: function() {
+  start: function () {
     console.log(this.name + ": Starting node helper");
     this.loaded = false;
   },
 
-  makeServerKey: function(server) {
+  makeServerKey: function (server) {
     return "" + server.address + ":" + (server.port | ("1883" + server.user));
   },
 
-  addServer: function(server) {
+  addServer: function (server) {
     console.log(this.name + ": Adding server: ", server);
     var serverKey = this.makeServerKey(server);
     var mqttServer = {};
@@ -48,13 +48,13 @@ module.exports = NodeHelper.create({
     this.startClient(mqttServer);
   },
 
-  addConfig: function(config) {
+  addConfig: function (config) {
     for (i = 0; i < config.mqttServers.length; i++) {
       this.addServer(config.mqttServers[i]);
     }
   },
 
-  startClient: function(server) {
+  startClient: function (server) {
     console.log(this.name + ": Starting client for: ", server);
 
     var self = this;
@@ -68,38 +68,37 @@ module.exports = NodeHelper.create({
 
     server.client = mqtt.connect(mqttServer, server.options);
 
-    server.client.on("error", function(err) {
+    server.client.on("error", function (err) {
       console.log(self.name + " " + server.serverKey + ": Error: " + err);
     });
 
-    server.client.on("reconnect", function(err) {
+    server.client.on("reconnect", function (err) {
       server.value = "reconnecting"; // Hmmm...
       console.log(self.name + ": " + server.serverKey + " reconnecting");
     });
 
-    server.client.on("connect", function(connack) {
+    server.client.on("connect", function (connack) {
       console.log(self.name + " connected to " + mqttServer);
       console.log(self.name + ": subscribing to " + server.topics);
       server.client.subscribe(server.topics);
     });
 
     server.client.on("message", (topic, payload) => {
-      console.log(" Received data: " + topic + " " + payload);
       this.sendSocketNotification("MQTT_PAYLOAD", {
         serverKey: server.serverKey,
         topic: topic,
         value: payload.toString(),
-        time: Date.now()
+        time: Date.now(),
       });
     });
   },
 
-  socketNotificationReceived: function(notification, payload) {
+  socketNotificationReceived: function (notification, payload) {
     var self = this;
     if (notification === "MQTT_CONFIG") {
       var config = payload;
       self.addConfig(config);
       self.loaded = true;
     }
-  }
+  },
 });

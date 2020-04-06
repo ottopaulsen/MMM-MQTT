@@ -120,9 +120,6 @@ Module.register("MMM-MQTT", {
   },
 
   isValueTooOld: function (maxAgeSeconds, updatedTime) {
-    // console.log(this.name + ': maxAgeSeconds = ', maxAgeSeconds);
-    // console.log(this.name + ': updatedTime = ', updatedTime);
-    // console.log(this.name + ': Date.now() = ', Date.now());
     if (maxAgeSeconds) {
       if (updatedTime + maxAgeSeconds * 1000 < Date.now()) {
         return true;
