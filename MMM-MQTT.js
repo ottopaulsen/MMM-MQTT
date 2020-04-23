@@ -53,6 +53,7 @@ Module.register("MMM-MQTT", {
           label: sub.label,
           topic: sub.topic,
           decimals: sub.decimals,
+          decimalSignInMessage: sub.decimalSignInMessage,
           jsonpointer: sub.jsonpointer,
           suffix: typeof sub.suffix == "undefined" ? "" : sub.suffix,
           value: "",
@@ -93,6 +94,11 @@ Module.register("MMM-MQTT", {
             // Extract value if JSON Pointer is configured
             if (sub.jsonpointer) {
               value = get(JSON.parse(value), sub.jsonpointer);
+            }
+
+            // Convert decimal point
+            if (sub.decimalSignInMessage) {
+              value = value.replace(sub.decimalSignInMessage, ".");
             }
 
             // Multiply or divide

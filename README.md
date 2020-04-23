@@ -57,6 +57,14 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                         maxAgeSeconds: 60
                     },
                     {
+                        topic: 'smoky/2/inside/temperature',
+                        label: 'Temp ute',
+                        decimals: 1,
+                        decimalSignInMessage: ",", // If the message decimal point is not "."
+                        sortOrder: 20,
+                        maxAgeSeconds: 60
+                    },
+                    {
                         topic: 'smoky/1/inside/smoke',
                         label: 'Røyk',
                         sortOrder: 30,
@@ -105,12 +113,12 @@ You can also use this to display icons. Example:
 conversions: [
   {
     from: "on",
-    to: "<i class='fas fa-toggle-on' style='color:green'></i>"
+    to: "<i class='fas fa-toggle-on' style='color:green'></i>",
   },
   {
     from: "off",
-    to: "<i class='fas fa-toggle-off' style='color:red'></i>"
-  }
+    to: "<i class='fas fa-toggle-off' style='color:red'></i>",
+  },
 ];
 ```
 
