@@ -122,6 +122,26 @@ conversions: [
 ];
 ```
 
+#### Hide table entry at specified value
+
+You can hide the complete table entry if the value is like defined.
+
+In this example we only show the green button if value is 'on'.
+If the value is 'off' the whole line is hidden.
+
+```javascript
+conversions: [
+  {
+    from: "on",
+    to: "<i class='fas fa-toggle-on' style='color:green'></i>",
+  },
+  {
+    from: "off",
+    to: "#DISABLED#",
+  },
+];
+```
+
 ### Colored values
 
 For numeric values, color codes can be configured using the colors array in the subscription config.
