@@ -88,7 +88,7 @@ module.exports = NodeHelper.create({
         serverKey: server.serverKey,
         topic: topic,
         value: payload.toString(),
-        time: Date.now(),
+        time: Date.now()
       });
     });
   },
@@ -100,5 +100,5 @@ module.exports = NodeHelper.create({
       self.addConfig(config);
       self.loaded = true;
     }
-  },
+  }
 });

@@ -15,5 +15,11 @@
     "mocha": "^6.2.3",
     "mqtt": "^2.18.8",
     "mqtt-packet": "^6.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.23.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1"
   }
 }
