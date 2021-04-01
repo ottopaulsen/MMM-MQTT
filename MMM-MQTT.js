@@ -211,7 +211,8 @@ Module.register("MMM-MQTT", {
         // Value
         tooOld = self.isValueTooOld(sub.maxAgeSeconds, sub.time);
         var valueWrapper = document.createElement("td");
-        valueWrapper.innerHTML = self.convertValue(sub);
+        var setValueinnerHTML = self.convertValue(sub);
+        valueWrapper.innerHTML = setValueinnerHTML;
         valueWrapper.className =
           "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
         valueWrapper.style.color = tooOld
@@ -225,8 +226,8 @@ Module.register("MMM-MQTT", {
         suffixWrapper.className = "align-left mqtt-suffix";
         subWrapper.appendChild(suffixWrapper);
         subWrapper.style.color = colors.suffix;
-
-        wrapper.appendChild(subWrapper);
+        if ( setValueinnerHTML !== "#DISABLED#")
+          wrapper.appendChild(subWrapper);
       });
 
     return wrapper;
