@@ -1,0 +1,112 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MMM-MQTT module renders all fetures 1`] = `
+<table
+  class="small"
+>
+  <tr>
+    <td
+      class="align-left mqtt-label"
+      style="color: red;"
+    >
+      Topic 1 sensor
+    </td>
+    <td
+      class="align-right medium mqtt-value bright"
+    >
+      55
+    </td>
+    <td
+      class="align-left mqtt-suffix"
+    />
+  </tr>
+  <tr>
+    <td
+      class="align-left mqtt-label"
+    >
+      Topic 2 sensor
+    </td>
+    <td
+      class="align-right medium mqtt-value bright"
+    >
+      30.05
+    </td>
+    <td
+      class="align-left mqtt-suffix"
+    />
+  </tr>
+  <tr>
+    <td
+      class="align-left mqtt-label"
+    >
+      Topic 1 value
+    </td>
+    <td
+      class="align-right medium mqtt-value bright"
+    />
+    <td
+      class="align-left mqtt-suffix"
+    />
+  </tr>
+  <tr>
+    <td
+      class="align-left mqtt-label"
+    >
+      Topic 2 value
+    </td>
+    <td
+      class="align-right medium mqtt-value bright"
+    >
+      111
+    </td>
+    <td
+      class="align-left mqtt-suffix"
+    />
+  </tr>
+  <tr>
+    <td
+      class="align-left mqtt-label"
+    >
+      Topic 3 value
+    </td>
+    <td
+      class="align-right medium mqtt-value bright"
+    >
+      1250
+    </td>
+    <td
+      class="align-left mqtt-suffix"
+    />
+  </tr>
+  <tr>
+    <td
+      class="align-left mqtt-label"
+    >
+      Topic 4 value
+    </td>
+    <td
+      class="align-right medium mqtt-value bright"
+    >
+      125.7
+    </td>
+    <td
+      class="align-left mqtt-suffix"
+    />
+  </tr>
+  <tr>
+    <td
+      class="align-left mqtt-label"
+    >
+      Topic 5 value
+    </td>
+    <td
+      class="align-right medium mqtt-value bright"
+    >
+      Open
+    </td>
+    <td
+      class="align-left mqtt-suffix"
+    />
+  </tr>
+</table>
+`;

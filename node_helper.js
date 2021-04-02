@@ -1,11 +1,11 @@
-const mqtt = require("mqtt");
+const mqttHelper = require("./mqtt_helper");
 const NodeHelper = require("node_helper");
 
-var servers = [];
-
 module.exports = NodeHelper.create({
+  servers: [],
+  logging: false,
   log: function (...args) {
-    if (this.config.logging) {
+    if (this.logging) {
       console.log(args);
     }
   },
@@ -15,90 +15,33 @@ module.exports = NodeHelper.create({
     this.loaded = false;
   },
 
-  makeServerKey: function (server) {
-    return "" + server.address + ":" + (server.port | ("1883" + server.user));
-  },
-
-  addServer: function (server) {
-    console.log(this.name + ": Adding server: ", server);
-    var serverKey = this.makeServerKey(server);
-    var mqttServer = {};
-    var foundServer = false;
-    for (i = 0; i < servers.length; i++) {
-      if (servers[i].serverKey === serverKey) {
-        mqttServer = servers[i];
-        foundServer = true;
-      }
-    }
-    if (!foundServer) {
-      mqttServer.serverKey = serverKey;
-      mqttServer.address = server.address;
-      mqttServer.port = server.port;
-      mqttServer.options = {};
-      mqttServer.topics = [];
-      if (server.user) mqttServer.options.username = server.user;
-      if (server.password) mqttServer.options.password = server.password;
-    }
-
-    for (i = 0; i < server.subscriptions.length; i++) {
-      mqttServer.topics.push(server.subscriptions[i].topic);
-    }
-
-    servers.push(mqttServer);
-    this.startClient(mqttServer);
-  },
-
-  addConfig: function (config) {
-    for (i = 0; i < config.mqttServers.length; i++) {
-      this.addServer(config.mqttServers[i]);
-    }
-  },
-
-  startClient: function (server) {
-    console.log(this.name + ": Starting client for: ", server);
-
-    var self = this;
-
-    var mqttServer =
-      (server.address.match(/^mqtts?:\/\//) ? "" : "mqtt://") + server.address;
-    if (server.port) {
-      mqttServer = mqttServer + ":" + server.port;
-    }
-    console.log(self.name + ": Connecting to " + mqttServer);
-
-    server.client = mqtt.connect(mqttServer, server.options);
-
-    server.client.on("error", function (err) {
-      console.log(self.name + " " + server.serverKey + ": Error: " + err);
-    });
-
-    server.client.on("reconnect", function (err) {
-      server.value = "reconnecting"; // Hmmm...
-      console.log(self.name + ": " + server.serverKey + " reconnecting");
-    });
-
-    server.client.on("connect", function (connack) {
-      console.log(self.name + " connected to " + mqttServer);
-      console.log(self.name + ": subscribing to " + server.topics);
-      server.client.subscribe(server.topics);
-    });
-
-    server.client.on("message", (topic, payload) => {
-      this.sendSocketNotification("MQTT_PAYLOAD", {
-        serverKey: server.serverKey,
-        topic: topic,
-        value: payload.toString(),
-        time: Date.now()
-      });
-    });
-  },
+  startTimeout: null,
 
   socketNotificationReceived: function (notification, payload) {
-    var self = this;
+    const messageCallback = (key, topic, value) => {
+      this.log(
+        `Received message from ${key}: topic: ${topic}, message: ${value}`
+      );
+      this.sendSocketNotification("MQTT_PAYLOAD", {
+        serverKey: key,
+        topic: topic,
+        value: value,
+        time: Date.now()
+      });
+    };
+
     if (notification === "MQTT_CONFIG") {
-      var config = payload;
-      self.addConfig(config);
-      self.loaded = true;
+      this.servers = mqttHelper.addServers(this.servers, payload.mqttServers);
+      this.logging = payload.logging;
+
+      // Start clients
+      // Allow 2 seconds for multiple instances to configure servers
+      clearTimeout(this.startTimeout);
+      this.startTimeout = setTimeout(() => {
+        mqttHelper.startClients(this.servers, messageCallback, this.name);
+      }, 2000);
+
+      this.loaded = true;
     }
   }
 });
