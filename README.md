@@ -180,8 +180,16 @@ General styling can be done in the `MQTT.css` file. The table header can be styl
 
 Pull requests are welcome.
 
+## Thanks to
+
+Thanks to [Jan Lehnardt](https://github.com/janl/node-jsonpointer) for the jsonpointer.js file. I had to copy it from the repo and make a small change, in order to be able to use it from both the module helper and the module file.
+
+The topic_match code is also copied
+
 ## TO DO
 
 Create a timeout, so values are deleted if they are not refreshed. May be faded out...
 
 Create a threshold so a value is flashing if outside threshold.
+
+Make a filter so a row is displayed only if a value satisfies certain criteria. To be used f.eks. when a battery level is too low.
