@@ -8,8 +8,8 @@ Module.register("MMM-MQTT", {
   getScripts: function () {
     return [
       this.file("./jsonpointer.js"),
-      this.file("topics_match.js"),
-      this.file("utils.js")
+      this.file("./topics_match.js"),
+      this.file("./utils.js")
     ];
   },
 
