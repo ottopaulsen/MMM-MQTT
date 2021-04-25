@@ -3,6 +3,5 @@ module.exports = {
   testEnvironment: "node",
   testRegex: "(/test/.*)\\.test.js$",
   testPathIgnorePatterns: ["setupJest.js"],
-  setupFilesAfterEnv: ["<rootDir>/setupJest.js"],
   collectCoverageFrom: []
 };
