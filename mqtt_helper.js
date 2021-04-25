@@ -33,7 +33,9 @@ const addServers = function (servers, mqttServers) {
 };
 
 const startClient = function (server, messageCallback, name) {
-  console.log(name + ": Starting client for: ", server);
+  console.log(
+    `${name}: Starting client for ${server.address}:${server.port} user ${server.options.username}`
+  );
 
   var mqttServer =
     (server.address.match(/^mqtts?:\/\//) ? "" : "mqtt://") + server.address;
