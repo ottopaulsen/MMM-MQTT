@@ -31,7 +31,11 @@ module.exports = NodeHelper.create({
     };
 
     if (notification === "MQTT_CONFIG") {
-      this.servers = mqttHelper.addServers(this.servers, payload.mqttServers);
+      this.servers = mqttHelper.addServers(
+        this.servers,
+        payload.mqttServers,
+        this.name
+      );
       this.logging = payload.logging;
 
       // Start clients

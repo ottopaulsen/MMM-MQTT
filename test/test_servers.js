@@ -1,3 +1,4 @@
+const path = require("path");
 module.exports = [
   {
     address: "server1",
@@ -57,6 +58,19 @@ module.exports = [
           { from: "true", to: "Open" },
           { from: "false", to: "Closed" }
         ]
+      }
+    ]
+  },
+  {
+    address: "mqtts://server3",
+    port: "12345",
+    user: "myuser",
+    password: "mypassword",
+    ca: __dirname + path.sep + "cert.txt",
+    subscriptions: [
+      {
+        topic: "topic1/value",
+        label: "Topic 1 value"
       }
     ]
   }

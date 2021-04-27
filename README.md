@@ -28,10 +28,11 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
         useWildcards: false,
         mqttServers: [
             {
-                address: 'localhost',  // Server address or IP address
-                port: '1883',          // Port number if other than default
-                user: 'user',          // Leave out for no user
-                password: 'password',  // Leave out for no password
+                address: 'localhost',          // Server address or IP address
+                port: '1883',                  // Port number if other than default
+                // ca: '/path/to/ca/cert.crt', // Path to trusted CA certificate file (optional)
+                user: 'user',                  // Leave out for no user
+                password: 'password',          // Leave out for no password
                 subscriptions: [
                     {
                         topic: 'smoky/1/inside/temperature', // Topic to look for
