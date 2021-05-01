@@ -16,7 +16,7 @@ const mqttServers = require("./test_servers");
 
 describe("mqtt handling", () => {
   it("makes server config", () => {
-    const serverList = mqttHelper.addServers([], mqttServers);
+    const serverList = mqttHelper.addServers([], mqttServers, "MMM-MQTT");
     expect(serverList).toStrictEqual([
       {
         address: "server1",
@@ -43,13 +43,24 @@ describe("mqtt handling", () => {
           "topic4/value",
           "topic5/value"
         ]
+      },
+      {
+        address: "mqtts://server3",
+        port: "12345",
+        options: {
+          password: "mypassword",
+          username: "myuser",
+          ca: Buffer.from("TEST CERT")
+        },
+        serverKey: "mqtts://server3:12345myuser",
+        topics: ["topic1/value"]
       }
     ]);
   });
   it("starts clients", () => {
     global.console.log = jest.fn();
 
-    const serverList = mqttHelper.addServers([], mqttServers);
+    const serverList = mqttHelper.addServers([], mqttServers, "MMM-MQTT");
     mqttHelper.startClients(serverList);
     expect(mqttMock.connect).toHaveBeenCalledWith("mqtt://server1:12345", {
       password: "mypassword",
@@ -59,13 +70,27 @@ describe("mqtt handling", () => {
       password: "mypassword",
       username: "myuser"
     });
+    expect(mqttMock.connect).toHaveBeenCalledWith("mqtts://server3:12345", {
+      password: "mypassword",
+      username: "myuser",
+      ca: Buffer.from("TEST CERT")
+    });
     expect(console.log).toHaveBeenCalledWith(
       "MMM-MQTT: Connecting to mqtt://server1:12345"
     );
     expect(console.log).toHaveBeenCalledWith(
       "MMM-MQTT: Connecting to mqtt://server2"
     );
-    [0, 1].forEach((server) => {
+    expect(console.log).not.toHaveBeenCalledWith(
+      "MMM-MQTT: CA file not found!"
+    );
+    expect(console.log).not.toHaveBeenCalledWith(
+      "MMM-MQTT: CA file permissions issue!"
+    );
+    expect(console.log).toHaveBeenCalledWith(
+      "MMM-MQTT: Connecting to mqtts://server3:12345"
+    );
+    [0, 1, 2].forEach((server) => {
       ["error", "reconnect", "connect", "message"].forEach((event) => {
         expect(
           mqttMock.connect.mock.results[server].value.on

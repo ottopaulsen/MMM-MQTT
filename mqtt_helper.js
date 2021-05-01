@@ -1,7 +1,8 @@
 const { makeServerKey } = require("./utils");
 const mqtt = require("mqtt");
+const fs = require("fs");
 
-const addServer = function (servers, server) {
+const addServer = function (servers, server, name) {
   const serverKey = makeServerKey(server);
   const mqttServer = servers.find(
     (server) => server.serverKey === serverKey
@@ -14,7 +15,18 @@ const addServer = function (servers, server) {
   };
   if (server.user) mqttServer.options.username = server.user;
   if (server.password) mqttServer.options.password = server.password;
-
+  if (server.ca)
+    try {
+      mqttServer.options.ca = fs.readFileSync(server.ca);
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        console.log(name + ": CA file not found!");
+      } else if (err.code === "EACCES") {
+        console.log(name + ": CA file permissions issue!");
+      } else {
+        console.log(name + ": Error accessing CA file: " + err);
+      }
+    }
   mqttServer.topics.push(
     ...server.subscriptions
       .map((sub) => sub.topic)
@@ -24,9 +36,9 @@ const addServer = function (servers, server) {
   servers.push(mqttServer);
 };
 
-const addServers = function (servers, mqttServers) {
+const addServers = function (servers, mqttServers, name) {
   mqttServers.forEach((server) => {
-    addServer(servers, server);
+    addServer(servers, server, name);
   });
 
   return servers;

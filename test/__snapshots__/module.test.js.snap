@@ -108,5 +108,18 @@ exports[`MMM-MQTT module renders all fetures 1`] = `
       class="align-left mqtt-suffix"
     />
   </tr>
+  <tr>
+    <td
+      class="align-left mqtt-label"
+    >
+      Topic 1 value
+    </td>
+    <td
+      class="align-right medium mqtt-value bright"
+    />
+    <td
+      class="align-left mqtt-suffix"
+    />
+  </tr>
 </table>
 `;

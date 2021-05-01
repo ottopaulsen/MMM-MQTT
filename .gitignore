@@ -6,3 +6,5 @@ config.js
 
 .vscode/
 coverage
+/.scannerwork/
+*.crt
