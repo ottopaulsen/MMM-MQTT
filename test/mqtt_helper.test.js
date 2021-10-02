@@ -50,7 +50,8 @@ describe("mqtt handling", () => {
         options: {
           password: "mypassword",
           username: "myuser",
-          ca: Buffer.from("TEST CERT")
+          ca: Buffer.from("TEST CERT"),
+          clientId: "customclientid"
         },
         serverKey: "mqtts://server3:12345myuser",
         topics: ["topic1/value"]
@@ -73,7 +74,8 @@ describe("mqtt handling", () => {
     expect(mqttMock.connect).toHaveBeenCalledWith("mqtts://server3:12345", {
       password: "mypassword",
       username: "myuser",
-      ca: Buffer.from("TEST CERT")
+      ca: Buffer.from("TEST CERT"),
+      clientId: "customclientid"
     });
     expect(console.log).toHaveBeenCalledWith(
       "MMM-MQTT: Connecting to mqtt://server1:12345"

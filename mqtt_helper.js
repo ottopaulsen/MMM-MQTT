@@ -27,6 +27,7 @@ const addServer = function (servers, server, name) {
         console.log(name + ": Error accessing CA file: " + err);
       }
     }
+  if (server.clientId) mqttServer.options.clientId = server.clientId;
   mqttServer.topics.push(
     ...server.subscriptions
       .map((sub) => sub.topic)

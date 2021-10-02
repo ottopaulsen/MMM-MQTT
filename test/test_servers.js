@@ -67,6 +67,7 @@ module.exports = [
     user: "myuser",
     password: "mypassword",
     ca: __dirname + path.sep + "cert.txt",
+    clientId: "customclientid",
     subscriptions: [
       {
         topic: "topic1/value",
