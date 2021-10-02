@@ -60,7 +60,9 @@ Module.register("MMM-MQTT", {
       colors: sub.colors,
       conversions: sub.conversions,
       multiply: sub.multiply,
-      divide: sub.divide
+      divide: sub.divide,
+      broadcast: sub.broadcast,
+      hidden: sub.hidden
     };
   },
 
@@ -77,6 +79,10 @@ Module.register("MMM-MQTT", {
           : sub.topic == payload.topic
       ) {
         var value = payload.value;
+
+        if (sub.broadcast) {
+          this.sendNotification("MQTT_MESSAGE_RECEIVED", payload);
+        }
 
         // Extract value if JSON Pointer is configured
         if (sub.jsonpointer) {
@@ -205,6 +211,7 @@ Module.register("MMM-MQTT", {
     }
 
     subscriptions
+      .filter((s) => !s.hidden)
       .sort((a, b) => {
         return a.sortOrder - b.sortOrder;
       })

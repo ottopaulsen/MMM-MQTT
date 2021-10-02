@@ -41,6 +41,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                         decimals: 1,          // Round numbers to this number of decimals
                         sortOrder: 10,        // Can be used to sort entries in the same table
                         maxAgeSeconds: 60,    // Reduce intensity if value is older
+                        broadcast: true,      // Broadcast messages to other modules
                         colors: [             // Value dependent colors
                             { upTo: -10, value: "blue", label: "blue", suffix: "blue" },
                             { upTo: 0, value: "#00ccff", label: "#00ccff", suffix: "#00ccff" },
@@ -55,7 +56,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                         suffix: '%',
                         decimals: 0,
                         sortOrder: 20,
-                        maxAgeSeconds: 60
+                        maxAgeSeconds: 60 
                     },
                     {
                         topic: 'smoky/2/inside/temperature',
@@ -76,6 +77,12 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
                         topic: 'guests',
                         label: 'First guest',
                         jsonpointer: '/people/0/name'
+                    },
+                    {
+                        topic: 'powerprices',
+                        label: 'Power prices',
+                        broadcast: true,
+                        hidden: true      // Do not display in the table
                     },
                     {
                         topic: "house/1/doors/1",
@@ -122,6 +129,10 @@ conversions: [
   },
 ];
 ```
+
+### Broadcasting messages
+
+By setting config variable `broadcast: true` for a given topic, every message with that topic is broadcasted to every other module using `sendNotification` with notification identifier `MQTT_MESSAGE_RECEIVED`. This can then be received by any other module using [`receiveNotification`](https://docs.magicmirror.builders/development/core-module-file.html#notificationreceived-notification-payload-sender).
 
 #### Hide table entry at specified value
 

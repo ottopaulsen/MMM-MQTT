@@ -1,6 +1,6 @@
 {
-  "name": "MMM-MQTT",
-  "version": "0.1.0",
+  "name": "mmm-mqtt",
+  "version": "1.1.0",
   "description": "Show payload from subscribed MQTT message",
   "author": "Otto Paulsen",
   "repository": {
