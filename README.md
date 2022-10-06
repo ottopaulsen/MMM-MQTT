@@ -20,83 +20,83 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
 
 ```javascript
 {
-    module: 'MMM-MQTT',
-    position: 'bottom_left',
-    header: 'MQTT',
-    config: {
-        logging: false,
-        useWildcards: false,
-        mqttServers: [
-            {
-                address: 'localhost',          // Server address or IP address
-                port: '1883',                  // Port number if other than default
-                // ca: '/path/to/ca/cert.crt', // Path to trusted CA certificate file (optional)
-                // clientId: 'mirror',         // Custom MQTT client ID (optional)
-                user: 'user',                  // Leave out for no user
-                password: 'password',          // Leave out for no password
-                subscriptions: [
-                    {
-                        topic: 'smoky/1/inside/temperature', // Topic to look for
-                        label: 'Temperature', // Displayed in front of value
-                        suffix: '°C',         // Displayed after the value
-                        decimals: 1,          // Round numbers to this number of decimals
-                        sortOrder: 10,        // Can be used to sort entries in the same table
-                        maxAgeSeconds: 60,    // Reduce intensity if value is older
-                        broadcast: true,      // Broadcast messages to other modules
-                        colors: [             // Value dependent colors
-                            { upTo: -10, value: "blue", label: "blue", suffix: "blue" },
-                            { upTo: 0, value: "#00ccff", label: "#00ccff", suffix: "#00ccff" },
-                            { upTo: 10, value: "yellow"},
-                            { upTo: 25, label: "green", suffix: "green" },
-                            { upTo: 100, label: "red" }, // The last one is used for higher values too
-                        ],
-                    },
-                    {
-                        topic: 'smoky/1/inside/humidity',
-                        label: 'Luftfuktighet',
-                        suffix: '%',
-                        decimals: 0,
-                        sortOrder: 20,
-                        maxAgeSeconds: 60 
-                    },
-                    {
-                        topic: 'smoky/2/inside/temperature',
-                        label: 'Temp ute',
-                        decimals: 1,
-                        decimalSignInMessage: ",", // If the message decimal point is not "."
-                        sortOrder: 20,
-                        maxAgeSeconds: 60
-                    },
-                    {
-                        topic: 'smoky/1/inside/smoke',
-                        label: 'Røyk',
-                        sortOrder: 30,
-                        divide: 10, // Divide numeric values. Alternatively use `multiply`.
-                        maxAgeSeconds: 60
-                    },
-                    {
-                        topic: 'guests',
-                        label: 'First guest',
-                        jsonpointer: '/people/0/name'
-                    },
-                    {
-                        topic: 'powerprices',
-                        label: 'Power prices',
-                        broadcast: true,
-                        hidden: true      // Do not display in the table
-                    },
-                    {
-                        topic: "house/1/doors/1",
-                        label: "Door",
-                        conversions: [
-                            { from: "true", to: "Open" },
-                            { from: "false", to: "Closed" }
-                        ]
-                    }
-                ]
-            }
-        ],
-    }
+  module: 'MMM-MQTT',
+  position: 'bottom_left',
+  header: 'MQTT',
+  config: {
+    logging: false,
+    useWildcards: false,
+    mqttServers: [
+      {
+        address: 'localhost',  // Server address or IP address
+        port: '1883',          // Port number if other than default
+        // ca: '/path/to/ca/cert.crt', // Path to trusted CA certificate file (optional)
+        // clientId: 'mirror',     // Custom MQTT client ID (optional)
+        user: 'user',          // Leave out for no user
+        password: 'password',      // Leave out for no password
+        subscriptions: [
+          {
+            topic: 'smoky/1/inside/temperature', // Topic to look for
+            label: 'Temperature', // Displayed in front of value
+            suffix: '°C',         // Displayed after the value
+            decimals: 1,          // Round numbers to this number of decimals
+            sortOrder: 10,        // Can be used to sort entries in the same table
+            maxAgeSeconds: 60,    // Reduce intensity if value is older
+            broadcast: true,      // Broadcast messages to other modules
+            colors: [             // Value dependent colors
+              { upTo: -10, value: "blue", label: "blue", suffix: "blue" },
+              { upTo: 0, value: "#00ccff", label: "#00ccff", suffix: "#00ccff" },
+              { upTo: 10, value: "yellow"},
+              { upTo: 25, label: "green", suffix: "green" },
+              { upTo: 100, label: "red" }, // The last one is used for higher values too
+            ],
+          },
+          {
+            topic: 'smoky/1/inside/humidity',
+            label: 'Luftfuktighet',
+            suffix: '%',
+            decimals: 0,
+            sortOrder: 20,
+            maxAgeSeconds: 60 
+          },
+          {
+            topic: 'smoky/2/inside/temperature',
+            label: 'Temp ute',
+            decimals: 1,
+            decimalSignInMessage: ",", // If the message decimal point is not "."
+            sortOrder: 20,
+            maxAgeSeconds: 60
+          },
+          {
+            topic: 'smoky/1/inside/smoke',
+            label: 'Røyk',
+            sortOrder: 30,
+            divide: 10, // Divide numeric values. Alternatively use `multiply`.
+            maxAgeSeconds: 60
+          },
+          {
+            topic: 'guests',
+            label: 'First guest',
+            jsonpointer: '/people/0/name'
+          },
+          {
+            topic: 'powerprices',
+            label: 'Power prices',
+            broadcast: true,
+            hidden: true    // Do not display in the table
+          },
+          {
+            topic: "house/1/doors/1",
+            label: "Door",
+            conversions: [
+              { from: "true", to: "Open" },
+              { from: "false", to: "Closed" }
+            ]
+          }
+        ]
+      }
+    ],
+  }
 }
 ```
 
@@ -206,3 +206,5 @@ Create a timeout, so values are deleted if they are not refreshed. May be faded 
 Create a threshold so a value is flashing if outside threshold.
 
 Make a filter so a row is displayed only if a value satisfies certain criteria. To be used f.eks. when a battery level is too low.
+
+Make a sound when a specific value changes.

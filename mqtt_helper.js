@@ -4,15 +4,16 @@ const fs = require("fs");
 
 const addServer = function (servers, server, name) {
   const serverKey = makeServerKey(server);
-  const mqttServer = servers.find(
-    (server) => server.serverKey === serverKey
-  ) || {
-    serverKey,
-    address: server.address,
-    port: server.port,
-    options: {},
-    topics: []
-  };
+  const serverExists = servers.some((s) => s.serverKey === serverKey);
+  const mqttServer = serverExists
+    ? servers.find((s) => s.serverKey === serverKey)
+    : {
+        serverKey,
+        address: server.address,
+        port: server.port,
+        options: {},
+        topics: []
+      };
   if (server.user) mqttServer.options.username = server.user;
   if (server.password) mqttServer.options.password = server.password;
   if (server.ca)
@@ -34,7 +35,9 @@ const addServer = function (servers, server, name) {
       .filter((topic) => !mqttServer.topics.includes(topic))
   );
 
-  servers.push(mqttServer);
+  if (!serverExists) {
+    servers.push(mqttServer);
+  }
 };
 
 const addServers = function (servers, mqttServers, name) {
@@ -81,7 +84,9 @@ const startClient = function (server, messageCallback, name) {
 
 const startClients = function (servers, messageCallback, name = "MMM-MQTT") {
   servers.forEach((server) => {
-    startClient(server, messageCallback, name);
+    if (!server.client) {
+      startClient(server, messageCallback, name);
+    }
   });
 };
 

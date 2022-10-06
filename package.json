@@ -1,6 +1,6 @@
 {
   "name": "mmm-mqtt",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Show payload from subscribed MQTT message",
   "author": "Otto Paulsen",
   "repository": {
@@ -8,6 +8,12 @@
     "url": "git://github.com/ottopaulsen/MMM-MQTT.git"
   },
   "license": "MIT",
+  "keywords": [
+    "magicmirror",
+    "smarthome",
+    "home-automation",
+    "mqtt"
+  ],
   "dependencies": {
     "mqtt": "^2.18.8",
     "mqtt-packet": "^6.3.2"
