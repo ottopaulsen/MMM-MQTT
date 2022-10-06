@@ -15,7 +15,7 @@
     "mqtt"
   ],
   "dependencies": {
-    "mqtt": "^2.18.8",
+    "mqtt": "^4.3.7",
     "mqtt-packet": "^6.3.2"
   },
   "devDependencies": {
