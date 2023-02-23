@@ -166,17 +166,33 @@ Module.register("MMM-MQTT", {
     return isNaN(res) ? value : "" + res;
   },
 
-  convertValue: function (sub) {
-    if (!sub.conversions || sub.conversions.length == 0) {
-      return sub.value;
-    }
-    for (i = 0; i < sub.conversions.length; i++) {
-      if (("" + sub.value).trim() == ("" + sub.conversions[i].from).trim()) {
-        return sub.conversions[i].to;
+ convertValue: function(sub) {
+  if (!sub.conversions || sub.conversions.length == 0) {
+    return sub.value;
+  }
+  for (var i = 0; i < sub.conversions.length; i++) {
+    var from = ("" + sub.conversions[i].from).trim();
+    var to = ("" + sub.conversions[i].to).trim();
+    var value = ("" + sub.value).trim();
+
+    // Check if the conversion from value is a range
+    if (from.includes("-")) {
+      var range = from.split("-");
+      var lower = parseFloat(range[0].trim());
+      var upper = parseFloat(range[1].trim());
+
+      // Check if the value is within the range
+      if (parseFloat(value) >= lower && parseFloat(value) <= upper) {
+        return to;
       }
     }
-    return sub.value;
-  },
+    // Check if the conversion from value is a single number
+    else if (value === from) {
+      return to;
+    }
+  }
+  return sub.value;
+}
 
   getDom: function () {
     return this.getWrapper(
