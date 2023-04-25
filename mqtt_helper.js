@@ -28,6 +28,33 @@ const addServer = function (servers, server, name) {
         console.log(name + ": Error accessing CA file: " + err);
       }
     }
+  if(server.cert) 
+    try {
+      mqttServer.options.cert = fs.readFileSync(server.cert);
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        console.log(name + ": Cert file not found!");
+      } else if (err.code === "EACCES") {
+        console.log(name + ": Cert file permissions issue!");
+      } else {
+        console.log(name + ": Error accessing cert file: " + err);
+      }
+    }
+  if(server.key) 
+    try {
+      mqttServer.options.key = fs.readFileSync(server.key);
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        console.log(name + ": Key file not found!");
+      } else if (err.code === "EACCES") {
+        console.log(name + ": Key file permissions issue!");
+      } else {
+        console.log(name + ": Error accessing key file: " + err);
+      }
+    }
+  if (server.allowUnauthorized)
+    mqttServer.options.rejectUnauthorized = false;
+
   if (server.clientId) mqttServer.options.clientId = server.clientId;
   mqttServer.topics.push(
     ...server.subscriptions
