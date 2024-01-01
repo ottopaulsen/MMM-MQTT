@@ -73,15 +73,17 @@ Module.register("MMM-MQTT", {
   setSubscriptionValue: function (subscriptions, payload, useWildcards) {
     for (let i = 0; i < subscriptions.length; i++) {
       sub = subscriptions[i];
-      if (
-        sub.serverKey == payload.serverKey && useWildcards
-          ? topicsMatch(sub.topic, payload.topic)
-          : sub.topic == payload.topic
+      const savedValues = new Map(Object.entries(JSON.parse(payload)))
+      const savedValue = savedValues.get(sub.serverKey + "-" + sub.topic)
+      if (savedValue &&
+        (sub.serverKey == savedValue.serverKey && useWildcards
+          ? topicsMatch(sub.topic, savedValue.topic)
+          : sub.topic == savedValue.topic)
       ) {
-        var value = payload.value;
+        var value = savedValue.value;
 
         if (sub.broadcast) {
-          this.sendNotification("MQTT_MESSAGE_RECEIVED", payload);
+          this.sendNotification("MQTT_MESSAGE_RECEIVED", savedValue);
         }
 
         // Extract value if JSON Pointer is configured
@@ -104,7 +106,7 @@ Module.register("MMM-MQTT", {
           }
         }
         sub.value = value;
-        sub.time = payload.time;
+        sub.time = savedValue.time;
       }
     }
     return subscriptions;
