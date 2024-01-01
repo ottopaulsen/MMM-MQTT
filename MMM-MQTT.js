@@ -71,9 +71,9 @@ Module.register("MMM-MQTT", {
   },
 
   setSubscriptionValue: function (subscriptions, payload, useWildcards) {
+    const savedValues = new Map(Object.entries(JSON.parse(payload)))
     for (let i = 0; i < subscriptions.length; i++) {
       sub = subscriptions[i];
-      const savedValues = new Map(Object.entries(JSON.parse(payload)))
       const savedValue = savedValues.get(sub.serverKey + "-" + sub.topic)
       if (savedValue &&
         (sub.serverKey == savedValue.serverKey && useWildcards
