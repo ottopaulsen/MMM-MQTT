@@ -1,6 +1,6 @@
 {
   "name": "mmm-mqtt",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Show payload from subscribed MQTT message",
   "author": "Otto Paulsen",
   "repository": {
@@ -15,13 +15,14 @@
     "mqtt"
   ],
   "dependencies": {
-    "mqtt": "^4.3.7",
-    "mqtt-packet": "^6.3.2"
+    "mqtt": "^5.3.4",
+    "mqtt-packet": "^9.0.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {
-    "eslint": "^7.23.0",
+    "eslint": "^8.56.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-prettier": "^3.3.1"
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.2"
   }
 }

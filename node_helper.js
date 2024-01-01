@@ -17,17 +17,17 @@ module.exports = NodeHelper.create({
 
   startTimeout: null,
 
+  savedValues: new Map(),
+
   socketNotificationReceived: function (notification, payload) {
-    const messageCallback = (key, topic, value) => {
+    const messageCallback = (serverKey, topic, value) => {
       this.log(
-        `Received message from ${key}: topic: ${topic}, message: ${value}`
+        `Received message from ${serverKey}: topic: ${topic}, message: ${value}`
       );
-      this.sendSocketNotification("MQTT_PAYLOAD", {
-        serverKey: key,
-        topic: topic,
-        value: value,
-        time: Date.now()
-      });
+      const time = Date.now()
+      this.savedValues.set(serverKey + '-' + topic, {serverKey, topic, value, time})
+      const payload = JSON.stringify(Object.fromEntries(this.savedValues))
+      this.sendSocketNotification("MQTT_PAYLOAD", payload);
     };
 
     if (notification === "MQTT_CONFIG") {
