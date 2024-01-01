@@ -16,7 +16,8 @@
   ],
   "dependencies": {
     "mqtt": "^5.3.4",
-    "mqtt-packet": "^9.0.0"
+    "mqtt-packet": "^9.0.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
