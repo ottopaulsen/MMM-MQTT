@@ -1,5 +1,8 @@
 Changes worth noticing, per version, starting from version 1.1.1
 
+### 1.2.1
+ - Send data to clients after connecting with config.
+
 ### 1.2.0
 
 - Save values in node_helper so clients get them also if they start later.

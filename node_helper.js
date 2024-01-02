@@ -43,6 +43,10 @@ module.exports = NodeHelper.create({
       clearTimeout(this.startTimeout);
       this.startTimeout = setTimeout(() => {
         mqttHelper.startClients(this.servers, messageCallback, this.name);
+
+        // Send existing values so new clients are updated
+        const payload = JSON.stringify(Object.fromEntries(this.savedValues))
+        this.sendSocketNotification("MQTT_PAYLOAD", payload);  
       }, 2000);
 
       this.loaded = true;
