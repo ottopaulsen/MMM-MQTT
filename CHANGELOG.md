@@ -1,5 +1,8 @@
 Changes worth noticing, per version, starting from version 1.1.1
 
+### 1.3.0
+ - Add bigMode to display big numbers instead of list.
+
 ### 1.2.1
  - Send data to clients after connecting with config.
 

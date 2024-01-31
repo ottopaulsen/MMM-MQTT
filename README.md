@@ -26,6 +26,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
   config: {
     logging: false,
     useWildcards: false,
+    bigMode: false, // Set to true to display big numbers with label above
     mqttServers: [
       {
         address: 'localhost',  // Server address or IP address

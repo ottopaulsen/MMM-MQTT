@@ -17,7 +17,8 @@ Module.register("MMM-MQTT", {
   defaults: {
     mqttServers: [],
     logging: false,
-    useWildcards: false
+    useWildcards: false,
+    bigMode: false
   },
 
   start: function () {
@@ -181,18 +182,32 @@ Module.register("MMM-MQTT", {
   },
 
   getDom: function () {
-    return this.getWrapper(
-      document,
-      this.subscriptions,
-      this.loaded,
-      this.translate,
-      this.name,
-      this.getColors,
-      this.isValueTooOld,
-      this.convertValue
-    );
+    if (this.config.bigMode) {
+      return this.getWrapperBigMode(
+        document,
+        this.subscriptions,
+        this.loaded,
+        this.translate,
+        this.name,
+        this.getColors,
+        this.isValueTooOld,
+        this.convertValue
+      );
+    } else {
+      return this.getWrapperListMode(
+        document,
+        this.subscriptions,
+        this.loaded,
+        this.translate,
+        this.name,
+        this.getColors,
+        this.isValueTooOld,
+        this.convertValue
+      );
+    }
   },
-  getWrapper(
+
+  getWrapperListMode(
     doc,
     subscriptions,
     loaded,
@@ -200,7 +215,7 @@ Module.register("MMM-MQTT", {
     name,
     getColors,
     isValueTooOld,
-    convertValue
+    convertValue,
   ) {
     const wrapper = document.createElement("table");
     wrapper.className = "small";
@@ -212,12 +227,14 @@ Module.register("MMM-MQTT", {
       return wrapper;
     }
 
+
     subscriptions
       .filter((s) => !s.hidden)
       .sort((a, b) => {
         return a.sortOrder - b.sortOrder;
       })
       .forEach(function (sub) {
+
         var subWrapper = doc.createElement("tr");
         let colors = getColors(sub);
 
@@ -248,7 +265,76 @@ Module.register("MMM-MQTT", {
         subWrapper.style.color = colors.suffix;
         if (setValueinnerHTML !== "#DISABLED#") wrapper.appendChild(subWrapper);
       });
+    return wrapper;
+  },
 
+  getWrapperBigMode(
+    doc,
+    subscriptions,
+    loaded,
+    translate,
+    name,
+    getColors,
+    isValueTooOld,
+    convertValue,
+  ) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "small";
+
+    if (subscriptions.length === 0) {
+      wrapper.innerHTML = loaded ? translate("EMPTY") : translate("LOADING");
+      wrapper.className = "small dimmed";
+      this.log(name + ": No values");
+      return wrapper;
+    }
+
+
+    subscriptions
+      .filter((s) => !s.hidden)
+      .sort((a, b) => {
+        return a.sortOrder - b.sortOrder;
+      })
+      .forEach(function (sub) {
+
+        var subWrapper = doc.createElement("div");
+        subWrapper.className = "mqtt-big";
+        let colors = getColors(sub);
+
+        // Label
+        var labelWrapper = doc.createElement("div");
+        labelWrapper.innerHTML = sub.label;
+        labelWrapper.className = "align-center mqtt-big-label";
+        labelWrapper.setAttribute("align", "left")
+        labelWrapper.style.color = colors.label;
+        subWrapper.appendChild(labelWrapper);
+
+        // Value row
+        var valueRowWrapper = doc.createElement("div");
+        valueRowWrapper.className = "mqtt-big-value-row";
+        valueRowWrapper.setAttribute("align", "center")
+        subWrapper.appendChild(valueRowWrapper);
+
+        // Value
+        tooOld = isValueTooOld(sub.maxAgeSeconds, sub.time);
+        var valueWrapper = doc.createElement("span");
+        var setValueinnerHTML = convertValue(sub);
+        valueWrapper.innerHTML = setValueinnerHTML;
+        valueWrapper.className =
+          "large mqtt-big-value " + (tooOld ? "dimmed" : "bright");
+        valueWrapper.style.color = tooOld
+          ? valueWrapper.style.color
+          : colors.value;
+          valueRowWrapper.appendChild(valueWrapper);
+
+        // Suffix
+        var suffixWrapper = doc.createElement("span");
+        suffixWrapper.innerHTML = sub.suffix;
+        suffixWrapper.className = " medium mqtt-big-suffix";
+        valueRowWrapper.appendChild(suffixWrapper);
+        subWrapper.style.color = colors.suffix;
+        if (setValueinnerHTML !== "#DISABLED#") wrapper.appendChild(subWrapper);
+
+      });
     return wrapper;
   }
 });
