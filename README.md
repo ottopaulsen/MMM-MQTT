@@ -161,6 +161,12 @@ conversions: [
 
 ### Colored values
 
+Value-independet colors can be defined like this:
+
+```javascript
+colors: {value: "#caccca", label: "green", suffix: "pink"},
+```
+
 For numeric values, color codes can be configured using the colors array in the subscription config.
 If you are using the same color scheme on multiple topics, you can configure it as a constant above the config variable like this:
 

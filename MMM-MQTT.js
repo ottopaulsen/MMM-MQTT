@@ -145,14 +145,17 @@ Module.register("MMM-MQTT", {
     }
 
     let colors;
-    for (i = 0; i < sub.colors.length; i++) {
-      colors = sub.colors[i];
-      if (sub.value < sub.colors[i].upTo) {
-        break;
-      }
+    if (!Array.isArray(sub.colors)) {
+        colors = sub.colors
+    } else {
+        for (i = 0; i < sub.colors.length; i++) {
+            colors = sub.colors[i];
+            if (sub.value < sub.colors[i].upTo) {
+                break;
+            }
+        }
     }
-
-    return colors;
+  return colors;
   },
 
   multiply: function (sub, value) {
