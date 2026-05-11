@@ -63,7 +63,8 @@ Module.register("MMM-MQTT", {
       multiply: sub.multiply,
       divide: sub.divide,
       broadcast: sub.broadcast,
-      hidden: sub.hidden
+      hidden: sub.hidden,
+      wildcardSourceTopic: sub.wildcardSourceTopic
     };
   },
 
@@ -71,43 +72,109 @@ Module.register("MMM-MQTT", {
     this.sendSocketNotification("MQTT_CONFIG", this.config);
   },
 
+  isWildcardTopic: function (topic) {
+    return topic.split("/").includes("+");
+  },
+
+  getWildcardValues: function (filter, topic) {
+    const filterLevels = filter.split("/");
+    const topicLevels = topic.split("/");
+    if (filterLevels.length !== topicLevels.length) {
+      return null;
+    }
+
+    const values = [];
+    for (let i = 0; i < filterLevels.length; i++) {
+      if (filterLevels[i] === "+") {
+        values.push(topicLevels[i]);
+      } else if (filterLevels[i] !== topicLevels[i]) {
+        return null;
+      }
+    }
+
+    return values;
+  },
+
+  expandWildcardLabel: function (label, topic, wildcardTopic) {
+    const values = this.getWildcardValues(wildcardTopic, topic) || [];
+    return values.reduce((expandedLabel, value, index) => {
+      return expandedLabel.replaceAll(`{${index + 1}}`, value);
+    }, label).replaceAll("{topic}", topic);
+  },
+
+  applySavedValue: function (sub, savedValue) {
+    var value = savedValue.value;
+
+    if (sub.broadcast) {
+      this.sendNotification("MQTT_MESSAGE_RECEIVED", savedValue);
+    }
+
+    // Extract value if JSON Pointer is configured
+    if (sub.jsonpointer) {
+      value = get(JSON.parse(value), sub.jsonpointer);
+    }
+
+    // Convert decimal point
+    if (sub.decimalSignInMessage) {
+      value = value.replace(sub.decimalSignInMessage, ".");
+    }
+
+    // Multiply or divide
+    value = this.multiply(sub, value);
+
+    // Round if decimals is configured
+    if (isNaN(sub.decimals) == false) {
+      if (isNaN(value) == false) {
+        value = Number(value).toFixed(sub.decimals);
+      }
+    }
+    sub.value = value;
+    sub.time = savedValue.time;
+  },
+
   setSubscriptionValue: function (subscriptions, payload, useWildcards) {
     const savedValues = new Map(Object.entries(JSON.parse(payload)))
     for (let i = 0; i < subscriptions.length; i++) {
       sub = subscriptions[i];
+      if (useWildcards && this.isWildcardTopic(sub.topic)) {
+        savedValues.forEach((savedValue) => {
+          if (
+            sub.serverKey == savedValue.serverKey &&
+            topicsMatch(sub.topic, savedValue.topic)
+          ) {
+            let expandedSub = subscriptions.find((candidate) => {
+              return (
+                candidate.wildcardSourceTopic === sub.topic &&
+                candidate.serverKey === sub.serverKey &&
+                candidate.topic === savedValue.topic
+              );
+            });
+
+            if (!expandedSub) {
+              expandedSub = this.makeSubscription(sub.serverKey, {
+                ...sub,
+                topic: savedValue.topic,
+                label: this.expandWildcardLabel(sub.label, savedValue.topic, sub.topic),
+                wildcardSourceTopic: sub.topic,
+                hidden: false
+              });
+              subscriptions.push(expandedSub);
+            }
+
+            this.applySavedValue(expandedSub, savedValue);
+          }
+        });
+        sub.hidden = true;
+        continue;
+      }
+
       const savedValue = savedValues.get(sub.serverKey + "-" + sub.topic)
       if (savedValue &&
         (sub.serverKey == savedValue.serverKey && useWildcards
           ? topicsMatch(sub.topic, savedValue.topic)
           : sub.topic == savedValue.topic)
       ) {
-        var value = savedValue.value;
-
-        if (sub.broadcast) {
-          this.sendNotification("MQTT_MESSAGE_RECEIVED", savedValue);
-        }
-
-        // Extract value if JSON Pointer is configured
-        if (sub.jsonpointer) {
-          value = get(JSON.parse(value), sub.jsonpointer);
-        }
-
-        // Convert decimal point
-        if (sub.decimalSignInMessage) {
-          value = value.replace(sub.decimalSignInMessage, ".");
-        }
-
-        // Multiply or divide
-        value = this.multiply(sub, value);
-
-        // Round if decimals is configured
-        if (isNaN(sub.decimals) == false) {
-          if (isNaN(value) == false) {
-            value = Number(value).toFixed(sub.decimals);
-          }
-        }
-        sub.value = value;
-        sub.time = savedValue.time;
+        this.applySavedValue(sub, savedValue);
       }
     }
     return subscriptions;
