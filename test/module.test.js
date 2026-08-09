@@ -50,6 +50,39 @@ function renderWrapper() {
 }
 
 describe("MMM-MQTT module", () => {
+  it("groups subscriptions with the same row", () => {
+    const groupedSubscriptions = mqttModule.makeSubscriptions([
+      {
+        address: "server1",
+        subscriptions: [
+          { topic: "progress", label: "Progress", row: "print" },
+          { topic: "remaining", label: "Remaining", row: "print" },
+          { topic: "status", label: "Status" }
+        ]
+      }
+    ]);
+
+    const wrapper = mqttModule.getWrapperListMode(
+      document,
+      groupedSubscriptions,
+      true,
+      translate,
+      "MMM-MQTT",
+      mqttModule.getColors,
+      mqttModule.isValueTooOld,
+      mqttModule.convertValue
+    );
+
+    expect(wrapper.querySelectorAll("tr")).toHaveLength(2);
+    expect(wrapper.querySelectorAll("tr:first-child td")).toHaveLength(6);
+    expect(wrapper.querySelector("tr:first-child").textContent).toContain(
+      "Progress"
+    );
+    expect(wrapper.querySelector("tr:first-child").textContent).toContain(
+      "Remaining"
+    );
+  });
+
   it("can make subscription list", () => {
     expect(subscriptions[0].topic).toBe("topic1/sensor");
     expect(subscriptions[0].serverKey).toBe("server1:12345myuser");

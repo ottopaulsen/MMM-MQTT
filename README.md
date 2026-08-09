@@ -60,6 +60,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
             label: 'Luftfuktighet',
             suffix: '%',
             decimals: 0,
+            row: 'indoor',       // Subscriptions with the same row share one line
             sortOrder: 20,
             maxAgeSeconds: 60 
           },
@@ -68,6 +69,7 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
             label: 'Temp ute',
             decimals: 1,
             decimalSignInMessage: ",", // If the message decimal point is not "."
+            row: 'indoor',
             sortOrder: 20,
             maxAgeSeconds: 60
           },
@@ -105,6 +107,30 @@ Here is an example configuration with description. Put it in the `MagicMirror/co
 ```
 
 mqttServers is an array, so you can add multiple servers to the same config. You can also use the module in multiple places on the mirror/screen.
+
+### Multiple values on one line
+
+In list mode, give subscriptions the same `row` value to display their label,
+value, and suffix cells on a single line. The `row` value may be a string or a
+number. Subscriptions without `row` continue to use one line each.
+
+```javascript
+{
+  topic: 'printer/progress',
+  label: 'Progress:',
+  suffix: '%',
+  row: 'print-progress'
+},
+{
+  topic: 'printer/remaining_minutes',
+  label: 'Remaining:',
+  suffix: ' min',
+  row: 'print-progress'
+}
+```
+
+The first subscription in a row determines where that row appears after
+sorting by `sortOrder`.
 
 ### JSON Data
 
