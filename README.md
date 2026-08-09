@@ -132,6 +132,40 @@ number. Subscriptions without `row` continue to use one line each.
 The first subscription in a row determines where that row appears after
 sorting by `sortOrder`.
 
+### Conditionally hiding a row
+
+Use `hideWhen` to omit a complete row when another subscription on the same
+MQTT server has a given raw value. The condition topic must also be configured
+as a subscription in this module instance. It may use `hidden: true` if its own
+value should not be displayed.
+
+```javascript
+{
+  topic: 'printer/progress',
+  label: 'Progress:',
+  suffix: '%',
+  row: 'print-progress',
+  hideWhen: {
+    topic: 'printer/status',
+    value: 'IDLE'
+  }
+},
+{
+  topic: 'printer/remaining_minutes',
+  label: 'Remaining:',
+  suffix: ' min',
+  row: 'print-progress'
+},
+{
+  topic: 'printer/status',
+  label: 'Status:'
+}
+```
+
+Only one subscription in a grouped row needs the condition. Comparisons ignore
+surrounding whitespace but are otherwise exact and case-sensitive. Until the
+condition topic has received a value, the row remains visible.
+
 ### JSON Data
 
 If the payload contains JSON data, use the jsonpointer configuration to get the value. See [JSON Ponter specification](https://tools.ietf.org/html/rfc6901) or google an easier description.

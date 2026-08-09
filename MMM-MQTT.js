@@ -59,6 +59,7 @@ Module.register("MMM-MQTT", {
       maxAgeSeconds: sub.maxAgeSeconds,
       sortOrder: sub.sortOrder || 10, // TODO: Fix sort order i * 100 + j
       row: sub.row,
+      hideWhen: sub.hideWhen,
       colors: sub.colors,
       conversions: sub.conversions,
       multiply: sub.multiply,
@@ -206,6 +207,23 @@ Module.register("MMM-MQTT", {
     return rows;
   },
 
+  shouldHideRow: function (row, subscriptions) {
+    return row.some((sub) => {
+      if (!sub.hideWhen) {
+        return false;
+      }
+
+      const conditionValue = subscriptions.find((candidate) => {
+        return candidate.serverKey === sub.serverKey &&
+          candidate.topic === sub.hideWhen.topic;
+      });
+
+      return Boolean(conditionValue &&
+        ("" + conditionValue.value).trim() ===
+          ("" + sub.hideWhen.value).trim());
+    });
+  },
+
   getDom: function () {
     if (this.config.bigMode) {
       return this.getWrapperBigMode(
@@ -260,6 +278,7 @@ Module.register("MMM-MQTT", {
       });
 
     this.groupSubscriptionsByRow(visibleSubscriptions)
+      .filter((row) => !this.shouldHideRow(row, subscriptions))
       .forEach(function (row) {
 
         var subWrapper = doc.createElement("tr");

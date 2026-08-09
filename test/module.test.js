@@ -83,6 +83,34 @@ describe("MMM-MQTT module", () => {
     );
   });
 
+  it("hides a complete row when its condition matches", () => {
+    const status = {
+      serverKey: "server1:1883",
+      topic: "printer/status",
+      value: "IDLE"
+    };
+    const progress = {
+      serverKey: "server1:1883",
+      topic: "printer/progress",
+      row: "print-progress",
+      hideWhen: { topic: "printer/status", value: "IDLE" }
+    };
+    const remaining = {
+      serverKey: "server1:1883",
+      topic: "printer/remaining",
+      row: "print-progress"
+    };
+
+    expect(
+      mqttModule.shouldHideRow([progress, remaining], [status, progress, remaining])
+    ).toBe(true);
+
+    status.value = "PRINTING";
+    expect(
+      mqttModule.shouldHideRow([progress, remaining], [status, progress, remaining])
+    ).toBe(false);
+  });
+
   it("can make subscription list", () => {
     expect(subscriptions[0].topic).toBe("topic1/sensor");
     expect(subscriptions[0].serverKey).toBe("server1:12345myuser");
