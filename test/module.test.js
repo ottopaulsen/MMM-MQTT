@@ -50,6 +50,67 @@ function renderWrapper() {
 }
 
 describe("MMM-MQTT module", () => {
+  it("groups subscriptions with the same row", () => {
+    const groupedSubscriptions = mqttModule.makeSubscriptions([
+      {
+        address: "server1",
+        subscriptions: [
+          { topic: "progress", label: "Progress", row: "print" },
+          { topic: "remaining", label: "Remaining", row: "print" },
+          { topic: "status", label: "Status" }
+        ]
+      }
+    ]);
+
+    const wrapper = mqttModule.getWrapperListMode(
+      document,
+      groupedSubscriptions,
+      true,
+      translate,
+      "MMM-MQTT",
+      mqttModule.getColors,
+      mqttModule.isValueTooOld,
+      mqttModule.convertValue
+    );
+
+    expect(wrapper.querySelectorAll("tr")).toHaveLength(2);
+    expect(wrapper.querySelectorAll("tr:first-child td")).toHaveLength(6);
+    expect(wrapper.querySelector("tr:first-child").textContent).toContain(
+      "Progress"
+    );
+    expect(wrapper.querySelector("tr:first-child").textContent).toContain(
+      "Remaining"
+    );
+  });
+
+  it("hides a complete row when its condition matches", () => {
+    const status = {
+      serverKey: "server1:1883",
+      topic: "printer/status",
+      value: "IDLE"
+    };
+    const progress = {
+      serverKey: "server1:1883",
+      topic: "printer/progress",
+      row: "print-progress",
+      hideWhen: { topic: "printer/status", value: "IDLE" }
+    };
+    const remaining = {
+      serverKey: "server1:1883",
+      topic: "printer/remaining",
+      row: "print-progress"
+    };
+
+    expect(
+      mqttModule.shouldHideRow([progress, remaining], [status, progress, remaining])
+    ).toBe(true);
+
+    status.value = "PRINTING";
+    expect(
+      mqttModule.shouldHideRow([progress, remaining], [status, progress, remaining])
+    ).toBe(false);
+  });
+
   it("can make subscription list", () => {
     expect(subscriptions[0].topic).toBe("topic1/sensor");
     expect(subscriptions[0].serverKey).toBe("server1:12345myuser");

@@ -58,6 +58,8 @@ Module.register("MMM-MQTT", {
       time: Date.now(),
       maxAgeSeconds: sub.maxAgeSeconds,
       sortOrder: sub.sortOrder || 10, // TODO: Fix sort order i * 100 + j
+      row: sub.row,
+      hideWhen: sub.hideWhen,
       colors: sub.colors,
       conversions: sub.conversions,
       multiply: sub.multiply,
@@ -184,6 +186,44 @@ Module.register("MMM-MQTT", {
     return sub.value;
   },
 
+  groupSubscriptionsByRow: function (subscriptions) {
+    const rows = [];
+    const groupedRows = new Map();
+
+    subscriptions.forEach((sub) => {
+      if (sub.row === undefined) {
+        rows.push([sub]);
+        return;
+      }
+
+      if (!groupedRows.has(sub.row)) {
+        const row = [];
+        groupedRows.set(sub.row, row);
+        rows.push(row);
+      }
+      groupedRows.get(sub.row).push(sub);
+    });
+
+    return rows;
+  },
+
+  shouldHideRow: function (row, subscriptions) {
+    return row.some((sub) => {
+      if (!sub.hideWhen) {
+        return false;
+      }
+
+      const conditionValue = subscriptions.find((candidate) => {
+        return candidate.serverKey === sub.serverKey &&
+          candidate.topic === sub.hideWhen.topic;
+      });
+
+      return Boolean(conditionValue &&
+        ("" + conditionValue.value).trim() ===
+          ("" + sub.hideWhen.value).trim());
+    });
+  },
+
   getDom: function () {
     if (this.config.bigMode) {
       return this.getWrapperBigMode(
@@ -231,42 +271,51 @@ Module.register("MMM-MQTT", {
     }
 
 
-    subscriptions
+    const visibleSubscriptions = subscriptions
       .filter((s) => !s.hidden)
       .sort((a, b) => {
         return a.sortOrder - b.sortOrder;
-      })
-      .forEach(function (sub) {
+      });
+
+    this.groupSubscriptionsByRow(visibleSubscriptions)
+      .filter((row) => !this.shouldHideRow(row, subscriptions))
+      .forEach(function (row) {
 
         var subWrapper = doc.createElement("tr");
-        let colors = getColors(sub);
+        let disabled = false;
 
-        // Label
-        var labelWrapper = doc.createElement("td");
-        labelWrapper.innerHTML = sub.label;
-        labelWrapper.className = "align-left mqtt-label";
-        labelWrapper.style.color = colors.label;
-        subWrapper.appendChild(labelWrapper);
+        row.forEach(function (sub) {
+          const colors = getColors(sub);
 
-        // Value
-        tooOld = isValueTooOld(sub.maxAgeSeconds, sub.time);
-        var valueWrapper = doc.createElement("td");
-        var setValueinnerHTML = convertValue(sub);
-        valueWrapper.innerHTML = setValueinnerHTML;
-        valueWrapper.className =
-          "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
-        valueWrapper.style.color = tooOld
-          ? valueWrapper.style.color
-          : colors.value;
-        subWrapper.appendChild(valueWrapper);
+          // Label
+          var labelWrapper = doc.createElement("td");
+          labelWrapper.innerHTML = sub.label;
+          labelWrapper.className = "align-left mqtt-label";
+          labelWrapper.style.color = colors.label;
+          subWrapper.appendChild(labelWrapper);
 
-        // Suffix
-        var suffixWrapper = doc.createElement("td");
-        suffixWrapper.innerHTML = sub.suffix;
-        suffixWrapper.className = "align-left mqtt-suffix";
-        subWrapper.appendChild(suffixWrapper);
-        subWrapper.style.color = colors.suffix;
-        if (setValueinnerHTML !== "#DISABLED#") wrapper.appendChild(subWrapper);
+          // Value
+          const tooOld = isValueTooOld(sub.maxAgeSeconds, sub.time);
+          var valueWrapper = doc.createElement("td");
+          var setValueinnerHTML = convertValue(sub);
+          valueWrapper.innerHTML = setValueinnerHTML;
+          valueWrapper.className =
+            "align-right medium mqtt-value " + (tooOld ? "dimmed" : "bright");
+          valueWrapper.style.color = tooOld
+            ? valueWrapper.style.color
+            : colors.value;
+          subWrapper.appendChild(valueWrapper);
+
+          // Suffix
+          var suffixWrapper = doc.createElement("td");
+          suffixWrapper.innerHTML = sub.suffix;
+          suffixWrapper.className = "align-left mqtt-suffix";
+          suffixWrapper.style.color = colors.suffix;
+          subWrapper.appendChild(suffixWrapper);
+          disabled = disabled || setValueinnerHTML === "#DISABLED#";
+        });
+
+        if (!disabled) wrapper.appendChild(subWrapper);
       });
     return wrapper;
   },
