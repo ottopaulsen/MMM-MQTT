@@ -174,6 +174,8 @@ If the payload contains JSON data, use the jsonpointer configuration to get the 
 
 Wildcard "+" is supported in topics, but it only works on some platforms (Chrome, Electron). Set the useWildcards config to true for wildcards to work.
 
+Messages matching a wildcard subscription are displayed as separate rows. Labels can use `{1}`, `{2}`, and so on for matched wildcard values, or `{topic}` for the full topic.
+
 ### Conversions
 
 Use the conversions config to convert values from one to another. If there is no match, the received value is used.
