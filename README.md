@@ -219,6 +219,42 @@ conversions: [
 ];
 ```
 
+### Playing a sound
+
+Use the `sounds` list to play a sound whenever a message is received on the
+topic with a given value. Each entry pairs a `soundValue` with the `soundFile`
+to play when that value arrives. Put the sound files in the module directory
+(next to `MMM-MQTT.js`) and reference them by name. Set `hidden: true` if the
+subscription should only play a sound and not be shown in the table.
+
+```javascript
+{
+  topic: 'home/switch/doorbell',
+  hidden: true,
+  sounds: [
+    { soundValue: 'on', soundFile: 'doorbell.wav' }
+  ]
+}
+```
+
+Add more entries so different values play different sounds:
+
+```javascript
+{
+  topic: 'home/frontdoor/state',
+  hidden: true,
+  sounds: [
+    { soundValue: 'open', soundFile: 'door-open.wav' },
+    { soundValue: 'closed', soundFile: 'door-close.wav' }
+  ]
+}
+```
+
+The value comparison ignores surrounding whitespace but is otherwise exact and
+case-sensitive, and is made after any `jsonpointer`, `multiply`/`divide` or
+`decimals` processing. The sound plays once per message received with a matching
+value, not on repeated redraws.
+
 ### Colored values
 
 Value-independet colors can be defined like this:
@@ -276,5 +312,3 @@ Create a timeout, so values are deleted if they are not refreshed. May be faded 
 Create a threshold so a value is flashing if outside threshold.
 
 Make a filter so a row is displayed only if a value satisfies certain criteria. To be used f.eks. when a battery level is too low.
-
-Make a sound when a specific value changes.

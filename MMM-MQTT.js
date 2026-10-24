@@ -65,7 +65,9 @@ Module.register("MMM-MQTT", {
       multiply: sub.multiply,
       divide: sub.divide,
       broadcast: sub.broadcast,
-      hidden: sub.hidden
+      hidden: sub.hidden,
+      sounds: sub.sounds, // List of { soundValue, soundFile } to play on matching values
+      soundTime: null // Timestamp of the message that last triggered a sound
     };
   },
 
@@ -110,6 +112,21 @@ Module.register("MMM-MQTT", {
         }
         sub.value = value;
         sub.time = savedValue.time;
+
+        // Play a sound once when a fresh message arrives with a trigger value.
+        // Each entry in sounds pairs a soundValue with a soundFile, so different
+        // values can play different sounds. Comparing savedValue.time avoids
+        // replaying on unrelated topic updates, since every MQTT_PAYLOAD carries
+        // the full set of saved values.
+        if (sub.sounds && sub.soundTime !== savedValue.time) {
+          const match = sub.sounds.find(
+            (s) => ("" + value).trim() === ("" + s.soundValue).trim()
+          );
+          if (match && match.soundFile) {
+            sub.soundTime = savedValue.time;
+            this.playSound(match.soundFile);
+          }
+        }
       }
     }
     return subscriptions;
@@ -133,6 +150,17 @@ Module.register("MMM-MQTT", {
 
   getStyles: function () {
     return ["MQTT.css"];
+  },
+
+  playSound: function (soundfile) {
+    const sound = document.createElement("audio");
+    sound.src = this.file(soundfile);
+    sound.setAttribute("autoplay", true);
+    sound.loop = false;
+    sound.volume = 1.0;
+    sound.play().catch((err) => {
+      Log.warn(this.name + ": Could not play sound: " + err.message);
+    });
   },
 
   isValueTooOld: function (maxAgeSeconds, updatedTime) {
