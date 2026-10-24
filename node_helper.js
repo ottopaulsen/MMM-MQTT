@@ -1,5 +1,6 @@
 const mqttHelper = require("./mqtt_helper");
 const NodeHelper = require("node_helper");
+const { exec } = require("child_process");
 
 module.exports = NodeHelper.create({
   servers: [],
@@ -51,5 +52,24 @@ module.exports = NodeHelper.create({
 
       this.loaded = true;
     }
+
+    if (notification === "MQTT_PLAY_SOUND") {
+      this.playSound(payload);
+    }
+  },
+
+  playSound: function (payload) {
+    // The browser handles sound on the desktop. Electron on the Raspberry Pi
+    // blocks HTML5 autoplay, so play the file with a shell command there.
+    if (process.platform !== "linux") {
+      return;
+    }
+    const command = `${payload.command} ${this.path}/${payload.soundFile}`;
+    this.log(this.name + ": Playing sound: " + command);
+    exec(command, (error) => {
+      if (error) {
+        console.error(this.name + ": Error playing sound: " + error.message);
+      }
+    });
   }
 });

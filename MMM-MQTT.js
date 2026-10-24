@@ -18,7 +18,8 @@ Module.register("MMM-MQTT", {
     mqttServers: [],
     logging: false,
     useWildcards: false,
-    bigMode: false
+    bigMode: false,
+    playSoundCommand: "aplay -D plughw:0,0" // Used on the Raspberry Pi, where Electron blocks autoplay
   },
 
   start: function () {
@@ -152,14 +153,21 @@ Module.register("MMM-MQTT", {
     return ["MQTT.css"];
   },
 
-  playSound: function (soundfile) {
+  playSound: function (soundFile) {
+    // Browser audio works on the desktop. On the Raspberry Pi, Electron blocks
+    // autoplay, so the node helper also plays the file with a shell command.
     const sound = document.createElement("audio");
-    sound.src = this.file(soundfile);
+    sound.src = this.file(soundFile);
     sound.setAttribute("autoplay", true);
     sound.loop = false;
     sound.volume = 1.0;
     sound.play().catch((err) => {
-      Log.warn(this.name + ": Could not play sound: " + err.message);
+      Log.warn(this.name + ": Could not play sound in browser: " + err.message);
+    });
+
+    this.sendSocketNotification("MQTT_PLAY_SOUND", {
+      soundFile: soundFile,
+      command: this.config.playSoundCommand
     });
   },
 

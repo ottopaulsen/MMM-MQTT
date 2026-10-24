@@ -255,6 +255,18 @@ case-sensitive, and is made after any `jsonpointer`, `multiply`/`divide` or
 `decimals` processing. The sound plays once per message received with a matching
 value, not on repeated redraws.
 
+On the desktop the sound plays through the browser. On a Raspberry Pi, Electron
+blocks autoplay, so the node helper plays the file with a shell command instead.
+That command defaults to `aplay -D plughw:0,0` and can be set per module
+instance with the `playSoundCommand` config option:
+
+```javascript
+config: {
+  playSoundCommand: "aplay -D plughw:0,0",
+  mqttServers: [ /* ... */ ]
+}
+```
+
 ### Colored values
 
 Value-independet colors can be defined like this:
